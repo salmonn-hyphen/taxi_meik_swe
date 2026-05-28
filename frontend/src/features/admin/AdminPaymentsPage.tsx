@@ -11,6 +11,7 @@ import { useToast } from '@/providers'
 import type { Payment } from '@/types'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { CheckCircle, XCircle, DollarSign } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export function AdminPaymentsPage() {
   const { addToast } = useToast()
@@ -77,10 +78,40 @@ export function AdminPaymentsPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Payment Approvals</h1>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="all">All Pending ({counts.all})</TabsTrigger>
-          <TabsTrigger value="driver">Driver Payments ({counts.driver})</TabsTrigger>
-          <TabsTrigger value="owner">Owner Commission ({counts.owner})</TabsTrigger>
+        <TabsList className="mb-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl h-auto gap-1 flex-wrap">
+          <TabsTrigger
+            value="all"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-slate-800 dark:data-[state=active]:bg-slate-200 data-[state=active]:text-white dark:data-[state=active]:text-slate-900 data-[state=active]:shadow-sm",
+              "hover:text-slate-900 dark:hover:text-slate-100"
+            )}
+          >
+            All Pending ({counts.all})
+          </TabsTrigger>
+          <TabsTrigger
+            value="driver"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-indigo-500/30",
+              "hover:text-indigo-600 dark:hover:text-indigo-400"
+            )}
+          >
+            Driver Payments ({counts.driver})
+          </TabsTrigger>
+          <TabsTrigger
+            value="owner"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30",
+              "hover:text-amber-600 dark:hover:text-amber-400"
+            )}
+          >
+            Owner Commission ({counts.owner})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">

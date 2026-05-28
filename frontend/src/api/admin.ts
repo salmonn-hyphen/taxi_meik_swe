@@ -42,6 +42,11 @@ export const adminApi = {
     return res.data.data
   },
 
+  getOwnerHistory: async (): Promise<User[]> => {
+    const res = await apiClient.get('/admin/verifications/owners/history')
+    return res.data.data
+  },
+
   verifyOwner: async (userId: string | number, status: string, notes?: string): Promise<User> => {
     const res = await apiClient.post(`/admin/verifications/owners/${userId}`, { status, notes })
     return res.data.data
@@ -81,6 +86,11 @@ export const adminApi = {
   // Car verifications
   getPendingCars: async (): Promise<Car[]> => {
     const res = await apiClient.get('/admin/verifications/cars')
+    return res.data.data
+  },
+
+  getCarHistory: async (): Promise<Car[]> => {
+    const res = await apiClient.get('/admin/verifications/cars/history')
     return res.data.data
   },
 

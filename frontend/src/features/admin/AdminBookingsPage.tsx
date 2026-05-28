@@ -10,6 +10,7 @@ import { bookingsApi } from '@/api'
 import type { Booking } from '@/types'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { Car, Calendar, DollarSign, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export function AdminBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([])
@@ -57,11 +58,51 @@ export function AdminBookingsPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">All Bookings</h1>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="requested">Requested</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="completed">Completed</TabsTrigger>
+        <TabsList className="mb-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl h-auto gap-1">
+          <TabsTrigger
+            value="all"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-slate-800 dark:data-[state=active]:bg-slate-200 data-[state=active]:text-white dark:data-[state=active]:text-slate-900 data-[state=active]:shadow-sm",
+              "hover:text-slate-900 dark:hover:text-slate-100"
+            )}
+          >
+            All
+          </TabsTrigger>
+          <TabsTrigger
+            value="requested"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-indigo-500/30",
+              "hover:text-indigo-600 dark:hover:text-indigo-400"
+            )}
+          >
+            Requested
+          </TabsTrigger>
+          <TabsTrigger
+            value="active"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30",
+              "hover:text-amber-600 dark:hover:text-amber-400"
+            )}
+          >
+            Active
+          </TabsTrigger>
+          <TabsTrigger
+            value="completed"
+            className={cn(
+              "gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+              "text-slate-500 dark:text-slate-400",
+              "data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/30",
+              "hover:text-emerald-600 dark:hover:text-emerald-400"
+            )}
+          >
+            Completed
+          </TabsTrigger>
         </TabsList>
         <TabsContent value={activeTab} className="mt-4">
           {bookings.length === 0 ? (

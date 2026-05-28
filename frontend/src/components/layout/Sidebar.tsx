@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, CalendarCheck, Car,
-  Users, Shield, Bell, ScrollText, DollarSign, Landmark,
-  AlertTriangle, Star, Menu, X, ChevronDown, Gauge,
+  Users, Shield, Bell, DollarSign, Landmark,
+  Star, Menu, X, Gauge,
   PlusCircle, Lock,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -46,15 +46,12 @@ const adminNav: NavItem[] = [
   { label: 'Verify Cars', icon: <Car className="w-4 h-4" />, path: '/admin/verifications/cars' },
   { label: 'Bookings', icon: <CalendarCheck className="w-4 h-4" />, path: '/admin/bookings' },
   { label: 'Payments', icon: <DollarSign className="w-4 h-4" />, path: '/admin/payments' },
-  { label: 'Disputes', icon: <AlertTriangle className="w-4 h-4" />, path: '/admin/disputes' },
-  { label: 'Users', icon: <Users className="w-4 h-4" />, path: '/admin/users' },
   { label: 'Deposits', icon: <Landmark className="w-4 h-4" />, path: '/admin/deposits' },
   { label: 'Notifications', icon: <Bell className="w-4 h-4" />, path: '/admin/notifications' },
-  { label: 'Audit Log', icon: <ScrollText className="w-4 h-4" />, path: '/admin/audit-log' },
 ]
 
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false)
+  const collapsed = false
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user, refreshUser } = useAuth()
   const { isOwner, isDriver, isAdmin } = useRole()
@@ -128,27 +125,25 @@ export function Sidebar() {
           </nav>
         </ScrollArea>
 
-        <div className={cn(
-          'p-4 border-t flex items-center gap-3',
-          collapsed && 'justify-center',
-        )}>
+        <Link
+          to={isAdmin ? '/admin/profile' : `/${user?.role?.toLowerCase()}/profile`}
+          className={cn(
+            'p-4 border-t flex items-center gap-3 hover:bg-muted/50 transition-colors cursor-pointer',
+            collapsed && 'justify-center',
+          )}
+        >
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm shrink-0">
             {user ? getInitials(user.name) : '?'}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-sm font-medium truncate text-foreground">{user?.name}</p>
               <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
             </div>
           )}
-        </div>
+        </Link>
 
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex items-center justify-center h-8 border-t text-muted-foreground hover:text-foreground"
-        >
-          <ChevronDown className={cn('w-4 h-4 transition-transform', collapsed && 'rotate-90')} />
-        </button>
+
       </aside>
     </>
   )

@@ -164,6 +164,10 @@ function serializeUser(user: any) {
     created_at: user.createdAt.toISOString(),
     updated_at: user.updatedAt.toISOString(),
     owner_documents: serializeOwnerDocuments(user.ownerProfile),
+    owner_profile: user.ownerProfile ? {
+      nrc_text: user.ownerProfile.nrcText,
+      address: user.ownerProfile.address,
+    } : null,
   };
 }
 
@@ -247,6 +251,7 @@ function serializeCar(car: any) {
       left_image: car.carImages.leftImage,
       right_image: car.carImages.rightImage,
     } : null,
+    rejection_reason: car.rejectionReason || null,
   };
 }
 
@@ -763,6 +768,48 @@ app.get("/api/user/profile", async (req, res) => {
   }
 });
 
+app.put("/api/user/profile", async (req, res) => {
+  try {
+    const authUser = await requireUser(req, res);
+    if (!authUser) return;
+
+    const { name, phone, password } = req.body;
+
+    if (!name || !phone) {
+      return res.status(400).json({ error: "Name and phone number are required" });
+    }
+
+    // Check if phone number is already registered by another account
+    const existingUser = await prisma.user.findUnique({
+      where: { phone },
+    });
+    if (existingUser && existingUser.id !== authUser.id) {
+      return res.status(400).json({ error: "Phone number is already in use by another account" });
+    }
+
+    const updateData: any = {
+      name,
+      phone,
+    };
+
+    if (password && password.trim() !== "") {
+      const { hashPassword } = await import("better-auth/crypto");
+      updateData.passwordHash = await hashPassword(password);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: authUser.id },
+      data: updateData,
+      include: { ownerProfile: true, driverProfile: true },
+    });
+
+    return res.json({ data: serializeUser(updatedUser) });
+  } catch (error: any) {
+    console.error("Update user profile error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/api/owner/profile", async (req, res) => {
   try {
     const user = await requireUser(req, res, ["OWNER"]);
@@ -944,6 +991,29 @@ app.get("/api/admin/verifications/owners", async (req, res) => {
   }
 });
 
+app.get("/api/admin/verifications/owners/history", async (req, res) => {
+  try {
+    const admin = await requireUser(req, res, ["ADMIN"]);
+    if (!admin) return;
+
+    const owners = await prisma.user.findMany({
+      where: {
+        role: "OWNER",
+        verificationStatus: { in: ["APPROVED", "REJECTED"] },
+      },
+      include: {
+        ownerProfile: true,
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    return res.json({ data: owners.map(serializeUser) });
+  } catch (error: any) {
+    console.error("Get owner verifications history error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.post("/api/admin/verifications/owners/:userId", async (req, res) => {
   try {
     const admin = await requireUser(req, res, ["ADMIN"]);
@@ -980,6 +1050,7 @@ app.post("/api/admin/verifications/owners/:userId", async (req, res) => {
         data: {
           adminApprovalStatus: nextStatus,
           approvedAt: nextStatus === "APPROVED" ? new Date() : null,
+          ...(nextStatus === "REJECTED" && notes ? { nrcText: notes } : {}),
         },
       });
 
@@ -1038,12 +1109,30 @@ app.get("/api/admin/verifications/cars", async (req, res) => {
   }
 });
 
+app.get("/api/admin/verifications/cars/history", async (req, res) => {
+  try {
+    const admin = await requireUser(req, res, ["ADMIN"]);
+    if (!admin) return;
+
+    const cars = await prisma.car.findMany({
+      where: { adminApprovalStatus: { in: ["APPROVED", "REJECTED"] } },
+      include: { carImages: true, owner: { include: { ownerProfile: true } } },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    return res.json({ data: cars.map(serializeCar) });
+  } catch (error: any) {
+    console.error("Get car verifications history error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.post("/api/admin/verifications/cars/:carId", async (req, res) => {
   try {
     const admin = await requireUser(req, res, ["ADMIN"]);
     if (!admin) return;
 
-    const { status } = req.body;
+    const { status, notes } = req.body;
     const nextStatus = status === "verified" || status === "approved" ? "APPROVED" : status === "rejected" ? "REJECTED" : null;
 
     if (!nextStatus) {
@@ -1068,6 +1157,7 @@ app.post("/api/admin/verifications/cars/:carId", async (req, res) => {
       data: {
         adminApprovalStatus: nextStatus,
         approvedAt: nextStatus === "APPROVED" ? new Date() : null,
+        rejectionReason: nextStatus === "REJECTED" ? (notes || null) : null,
       },
       include: { carImages: true, owner: { include: { ownerProfile: true } } },
     });
