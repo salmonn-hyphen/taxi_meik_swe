@@ -7,8 +7,8 @@ import { formatCurrency } from '@/utils/format'
 
 interface CarCardProps {
   car: any
-  onView?: (id: number) => void
-  onBook?: (id: number) => void
+  onView?: (id: string | number) => void
+  onBook?: (id: string | number) => void
 }
 
 export function CarCard({ car, onView, onBook }: CarCardProps) {
@@ -48,7 +48,7 @@ export function CarCard({ car, onView, onBook }: CarCardProps) {
               <ChevronRight className="w-4 h-4" />
             </button>
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-              {photos.map((_, i) => (
+              {photos.map((_: unknown, i: number) => (
                 <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === imgIdx ? 'bg-white' : 'bg-white/40'}`} />
               ))}
             </div>

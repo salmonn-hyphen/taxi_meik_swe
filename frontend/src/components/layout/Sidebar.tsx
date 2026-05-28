@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, CalendarCheck, Car,
@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useAuth, useRole } from '@/providers'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { APP_NAME } from '@/constants'
+import { APP_NAME, isKycApproved } from '@/constants'
 import { getInitials } from '@/utils/format'
 
 interface NavItem {
@@ -20,13 +20,12 @@ interface NavItem {
   children?: { label: string; path: string }[]
 }
 
-const KYC_REQUIRED = ['verified', 'trusted']
-
 const ownerNav = (kycPassed: boolean): NavItem[] => [
   { label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" />, path: '/owner' },
   { label: 'My Post', icon: <FileText className="w-4 h-4" />, path: '/owner/cars', locked: !kycPassed },
   { label: 'Post Car', icon: <PlusCircle className="w-4 h-4" />, path: '/owner/cars/new', locked: !kycPassed },
   { label: 'Bookings', icon: <CalendarCheck className="w-4 h-4" />, path: '/owner/bookings', locked: !kycPassed },
+  { label: 'Payments', icon: <DollarSign className="w-4 h-4" />, path: '/owner/payments', locked: !kycPassed },
   { label: 'KYC', icon: <Shield className="w-4 h-4" />, path: '/owner/documents' },
   { label: 'Profile', icon: <Users className="w-4 h-4" />, path: '/owner/profile' },
 ]
@@ -35,6 +34,7 @@ const driverNav = (kycPassed: boolean): NavItem[] => [
   { label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" />, path: '/driver' },
   { label: 'Browse Cars', icon: <Car className="w-4 h-4" />, path: '/driver/cars' },
   { label: 'My Booking', icon: <CalendarCheck className="w-4 h-4" />, path: '/driver/bookings', locked: !kycPassed },
+  { label: 'Payments', icon: <DollarSign className="w-4 h-4" />, path: '/driver/payments', locked: !kycPassed },
   { label: 'KYC', icon: <Shield className="w-4 h-4" />, path: '/driver/documents' },
   { label: 'Profile', icon: <Users className="w-4 h-4" />, path: '/driver/profile' },
 ]
@@ -56,11 +56,19 @@ const adminNav: NavItem[] = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const { isOwner, isDriver, isAdmin } = useRole()
 
-  const kycPassed = !!user && KYC_REQUIRED.includes(user.verification_status)
+  const kycPassed = isKycApproved(user?.verification_status)
   const navItems = isAdmin ? adminNav : isOwner ? ownerNav(kycPassed) : isDriver ? driverNav(kycPassed) : []
+
+  useEffect(() => {
+    if ((isOwner || isDriver) && !kycPassed) {
+      refreshUser().catch(() => {
+        // Keep the current sidebar state if the session refresh fails.
+      })
+    }
+  }, [isOwner, isDriver, kycPassed, refreshUser])
 
   return (
     <>

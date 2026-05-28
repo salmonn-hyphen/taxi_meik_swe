@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { CarCard } from '@/components/shared/CarCard'
-import { MOCK_CARS } from '@/mock-data/driver'
+import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton'
+import { carsApi } from '@/api'
+import type { Car } from '@/types'
 
 const PER_PAGE_DESKTOP = 12
 const PER_PAGE_MOBILE = 6
@@ -13,17 +15,38 @@ export function DriverBrowseCarsPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
+  const [cars, setCars] = useState<Car[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, [])
   const perPage = isMobile ? PER_PAGE_MOBILE : PER_PAGE_DESKTOP
 
+  useEffect(() => {
+    const loadCars = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await carsApi.list({ verified_only: true })
+        setCars(response.data || [])
+      } catch (err: any) {
+        setCars([])
+        setError(err.response?.data?.error || 'Failed to load cars.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadCars()
+  }, [])
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    return MOCK_CARS.filter((c) => {
+    return cars.filter((c) => {
       if (!q) return true
       return c.brand.toLowerCase().includes(q) || c.model.toLowerCase().includes(q)
     })
-  }, [search])
+  }, [cars, search])
 
   const totalPages = Math.ceil(filtered.length / perPage)
   const paginated = filtered.slice((page - 1) * perPage, page * perPage)
@@ -42,10 +65,17 @@ export function DriverBrowseCarsPage() {
         <Input placeholder="Search by brand or model..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
       </div>
 
-      {paginated.length === 0 ? (
+      {loading ? (
+        <LoadingSkeleton type="card" count={8} />
+      ) : error ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <p className="text-lg">Could not load cars</p>
+          <p className="text-sm">{error}</p>
+        </div>
+      ) : paginated.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <p className="text-lg">No cars found</p>
-          <p className="text-sm">Try a different search term.</p>
+          <p className="text-sm">Only admin-approved, available cars from verified owners appear here.</p>
         </div>
       ) : (
         <>

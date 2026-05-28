@@ -923,6 +923,7 @@ export function RegisterPage() {
       });
       if (response.success) {
         setTempToken(response.tempToken);
+        setOtpCode("");
         setShowOtpModal(true);
         if (response.code) {
           console.log(`\n========================================\n[TESTING ONLY] OTP Code: ${response.code}\n========================================\n`);

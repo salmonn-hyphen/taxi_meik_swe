@@ -50,11 +50,19 @@ export const usersApi = {
   },
 
   uploadOwnerDocument: async (type: string, file: File): Promise<OwnerDocument> => {
-    const formData = new FormData()
-    formData.append('type', type)
-    formData.append('file', file)
-    const res = await apiClient.post('/owner/documents', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const fileData = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(String(reader.result))
+      reader.onerror = () => reject(reader.error)
+      reader.readAsDataURL(file)
+    })
+
+    const res = await apiClient.post('/owner/documents', {
+      type,
+      fileName: file.name,
+      mimeType: file.type,
+      fileSize: file.size,
+      fileData,
     })
     return res.data.data
   },

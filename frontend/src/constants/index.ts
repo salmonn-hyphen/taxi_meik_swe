@@ -19,6 +19,31 @@ export const VERIFICATION_COLORS: Record<string, string> = {
   suspended: "bg-red-100 text-red-700",
 };
 
+export function normalizeVerificationStatus(status?: string | null) {
+  if (!status) return "unverified";
+
+  switch (status.toUpperCase()) {
+    case "APPROVED":
+    case "VERIFIED":
+      return "verified";
+    case "PENDING":
+      return "pending";
+    case "REJECTED":
+      return "rejected";
+    case "TRUSTED":
+      return "trusted";
+    case "SUSPENDED":
+    case "FREEZE":
+      return "suspended";
+    default:
+      return status.toLowerCase();
+  }
+}
+
+export function isKycApproved(status?: string | null) {
+  return ["verified", "trusted"].includes(normalizeVerificationStatus(status));
+}
+
 export const BOOKING_LABELS: Record<string, string> = {
   requested: "Requested",
   accepted: "Accepted",
@@ -90,6 +115,11 @@ export const DOCUMENT_TYPES = [
   { key: "owner_book", label: "Owner Book" },
   { key: "vehicle_registration", label: "Vehicle Registration" },
   { key: "insurance", label: "Insurance" },
+];
+
+export const OWNER_KYC_DOCUMENT_TYPES = [
+  { key: "nrc_front", label: "NRC Front" },
+  { key: "nrc_back", label: "NRC Back" },
 ];
 
 export const SEVERITY_OPTIONS = [

@@ -9,7 +9,7 @@ import { formatDate, formatCurrency } from '@/utils/format'
 
 interface BookingCardProps {
   booking: Booking
-  onView?: (id: number) => void
+  onView?: (id: string | number) => void
   actions?: React.ReactNode
 }
 

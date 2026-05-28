@@ -1,20 +1,28 @@
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useAuth, useRole } from '@/providers'
 import { ShieldAlert, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { isKycApproved } from '@/constants'
 
 interface KYCLockProps {
   children: React.ReactNode
   feature: string
 }
 
-const KYC_REQUIRED = ['verified', 'trusted']
-
 export function KYCLock({ children, feature }: KYCLockProps) {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const { isDriver } = useRole()
 
-  if (user && KYC_REQUIRED.includes(user.verification_status)) {
+  useEffect(() => {
+    if (!isKycApproved(user?.verification_status)) {
+      refreshUser().catch(() => {
+        // Keep showing the lock if the current session cannot be refreshed.
+      })
+    }
+  }, [refreshUser, user?.verification_status])
+
+  if (isKycApproved(user?.verification_status)) {
     return <>{children}</>
   }
 

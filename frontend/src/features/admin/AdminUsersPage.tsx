@@ -17,7 +17,7 @@ export function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [roleFilter, setRoleFilter] = useState('')
-  const [processing, setProcessing] = useState<number | null>(null)
+  const [processing, setProcessing] = useState<string | number | null>(null)
 
   useEffect(() => {
     loadUsers()
@@ -34,7 +34,7 @@ export function AdminUsersPage() {
     }
   }
 
-  const handleSuspend = async (userId: number, reason: string) => {
+  const handleSuspend = async (userId: string | number, reason: string) => {
     try {
       setProcessing(userId)
       await adminApi.suspendUser(userId, reason)
@@ -47,7 +47,7 @@ export function AdminUsersPage() {
     }
   }
 
-  const handleUnsuspend = async (userId: number) => {
+  const handleUnsuspend = async (userId: string | number) => {
     try {
       setProcessing(userId)
       await adminApi.unsuspendUser(userId)

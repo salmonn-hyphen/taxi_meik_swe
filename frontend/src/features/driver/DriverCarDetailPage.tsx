@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -12,9 +12,11 @@ import {
   DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import { KYCLock } from '@/components/shared/KYCLock'
-import { useAuth } from '@/providers'
-import { MOCK_CARS, MOCK_BOOKINGS, MOCK_REVIEWS } from '@/mock-data/driver'
+import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton'
+import { useAuth, useToast } from '@/providers'
+import { bookingsApi, carsApi } from '@/api'
 import { formatCurrency, formatDate } from '@/utils/format'
+import type { Car } from '@/types'
 
 const KYC_REQUIRED = ['verified', 'trusted']
 
@@ -22,22 +24,58 @@ export function DriverCarDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { addToast } = useToast()
 
-  const car = useMemo(() => MOCK_CARS.find((c) => c.id === Number(id)), [id])
-  const carBookings = useMemo(() => MOCK_BOOKINGS.filter((b) => b.car_id === Number(id)), [id])
-  const carReviews = useMemo(() => MOCK_REVIEWS.filter((r) => carBookings.some((b) => b.id === r.booking_id)), [carBookings])
-
+  const [car, setCar] = useState<Car | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [imgIdx, setImgIdx] = useState(0)
   const [showApply, setShowApply] = useState(false)
   const [showReview, setShowReview] = useState(false)
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewComment, setReviewComment] = useState('')
   const [applied, setApplied] = useState(false)
+  const [applying, setApplying] = useState(false)
 
-  if (!car) {
+  const carBookings = useMemo<any[]>(() => [], [])
+  const carReviews = useMemo<any[]>(() => [], [])
+
+  useEffect(() => {
+    const loadCar = async () => {
+      if (!id) {
+        setError('Car not found')
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await carsApi.getById(id)
+        setCar(data)
+      } catch (err: any) {
+        setCar(null)
+        setError(err.response?.data?.error || 'Car not found')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadCar()
+  }, [id])
+
+  useEffect(() => {
+    setImgIdx(0)
+  }, [car?.id])
+
+  if (loading) {
+    return <LoadingSkeleton type="detail" count={3} />
+  }
+
+  if (!car || error) {
     return (
       <div className="text-center py-20">
-        <p className="text-lg font-medium">Car not found</p>
+        <p className="text-lg font-medium">{error || 'Car not found'}</p>
         <Button size="sm" className="mt-3" onClick={() => navigate('/driver/cars')}>Back to Browse</Button>
       </div>
     )
@@ -45,9 +83,22 @@ export function DriverCarDetailPage() {
 
   const photos = car.photos || []
 
-  const handleApply = () => {
-    setApplied(true)
-    setShowApply(false)
+  const handleApply = async () => {
+    if (!car) return
+
+    try {
+      setApplying(true)
+      await bookingsApi.create(car.id, {
+        driver_notes: `Borrow request for ${car.brand} ${car.model}`,
+      })
+      setApplied(true)
+      setShowApply(false)
+      addToast('Borrow request sent to the owner.', 'success')
+    } catch (err: any) {
+      addToast(err.response?.data?.error || 'Failed to send borrow request.', 'error')
+    } finally {
+      setApplying(false)
+    }
   }
 
   const handleSubmitReview = () => {
@@ -172,7 +223,7 @@ export function DriverCarDetailPage() {
                 {car.monthly_rate && <p>Monthly: {formatCurrency(car.monthly_rate)}</p>}
               </div>
 
-              <Button className="w-full" size="lg" disabled={!car.is_available || applied} onClick={() => setShowApply(true)}>
+              <Button className="w-full" size="lg" disabled={!car.is_available || applied || applying} onClick={() => setShowApply(true)}>
                 {applied ? 'Application Sent' : car.is_available ? 'Apply to Rent' : 'Unavailable'}
               </Button>
 
@@ -206,8 +257,8 @@ export function DriverCarDetailPage() {
             <button onClick={() => setShowApply(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
               Cancel
             </button>
-            <button onClick={handleApply} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-              Send Application
+            <button disabled={applying} onClick={handleApply} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+              {applying ? 'Sending...' : 'Send Application'}
             </button>
           </DialogFooter>
         </DialogContent>

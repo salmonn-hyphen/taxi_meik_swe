@@ -168,7 +168,7 @@ export function CarDetailsPage() {
               disabled={!car.is_available}
               onClick={() => {
                 if (!isAuthenticated) navigate('/login')
-                else if (user?.role === 'driver') navigate(`/driver/book?car=${car.id}`)
+                else if (user?.role === 'DRIVER') navigate(`/driver/book?car=${car.id}`)
                 else navigate('/register?role=driver')
               }}
             >

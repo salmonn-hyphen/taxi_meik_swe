@@ -267,6 +267,21 @@ export function AdminVerificationsPage({ type }: Props) {
     }
   }
 
+  const handleReviewOther = async (item: any, status: 'verified' | 'rejected') => {
+    try {
+      if (type === 'owners') {
+        await adminApi.verifyOwner(item.id, status)
+      } else if (type === 'cars') {
+        await adminApi.verifyCar(item.id, status)
+      }
+
+      setItems((prev) => prev.filter((current) => current.id !== item.id))
+      addToast(`${status === 'verified' ? 'Approved' : 'Rejected'} successfully.`, 'success')
+    } catch (err: any) {
+      addToast(err.response?.data?.error || `Failed to ${status === 'verified' ? 'approve' : 'reject'}.`, 'error')
+    }
+  }
+
   // ─── Non-driver type simple view ─────────────────────────────────────────
   if (type !== 'drivers') {
     if (loading) return <div className="space-y-6"><h1 className="text-2xl font-bold">{title}</h1><LoadingSkeleton type="list" count={5} /></div>
@@ -289,10 +304,10 @@ export function AdminVerificationsPage({ type }: Props) {
                     <p className="text-sm text-muted-foreground">{item.email || item.city}</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="success" onClick={() => adminApi.verifyOwner(item.id, 'verified')}>
+                    <Button size="sm" variant="success" onClick={() => handleReviewOther(item, 'verified')}>
                       <CheckCircle2 className="w-4 h-4 mr-1" /> Approve
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => adminApi.verifyOwner(item.id, 'rejected')}>
+                    <Button size="sm" variant="destructive" onClick={() => handleReviewOther(item, 'rejected')}>
                       <XCircle className="w-4 h-4 mr-1" /> Reject
                     </Button>
                   </div>

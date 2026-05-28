@@ -13,6 +13,7 @@ interface AuthContextType {
   registerDriver: (data: RegisterDriverRequest) => Promise<void>
   logout: () => Promise<void>
   updateUser: (user: User) => void
+  refreshUser: () => Promise<User | null>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -33,13 +34,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!user && !!token
 
+  const refreshUser = useCallback(async () => {
+    const currentUser = await authApi.me()
+    setUser(currentUser)
+    setToken(localStorage.getItem('token') || 'session-token')
+    localStorage.setItem('user', JSON.stringify(currentUser))
+    return currentUser
+  }, [])
+
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const currentUser = await authApi.me()
-        setUser(currentUser)
-        setToken(localStorage.getItem('token') || 'session-token')
-        localStorage.setItem('user', JSON.stringify(currentUser))
+        await refreshUser()
       } catch (err) {
         setUser(null)
         setToken(null)
@@ -50,7 +56,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
     checkSession()
-  }, [])
+  }, [refreshUser])
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const handleFocus = () => {
+      refreshUser().catch(() => {
+        // Keep the current cached session if a foreground refresh fails.
+      })
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [isAuthenticated, refreshUser])
 
   const login = useCallback(async (data: LoginRequest) => {
     setIsLoading(true)
@@ -103,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         registerDriver,
         logout,
         updateUser,
+        refreshUser,
       }}
     >
       {children}

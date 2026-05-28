@@ -27,7 +27,7 @@ function OwnerBookingsContent() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('all')
-  const [actionId, setActionId] = useState<number | null>(null)
+  const [actionId, setActionId] = useState<string | number | null>(null)
   const [actionType, setActionType] = useState<'accept' | 'reject' | null>(null)
   const [processing, setProcessing] = useState(false)
 
@@ -108,6 +108,7 @@ function OwnerBookingsContent() {
                         </div>
                         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                           <StatusBadge status={booking.status} type="booking" />
+                          <StatusBadge status={booking.owner_payment_status || booking.owner_payment?.status || 'incomplete'} type="payment" />
                           {booking.status === 'requested' && (
                             <div className="flex gap-2">
                               <Button size="sm" variant="success" onClick={() => { setActionId(booking.id); setActionType('accept') }}>Accept</Button>

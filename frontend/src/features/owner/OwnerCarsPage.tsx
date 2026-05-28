@@ -25,7 +25,7 @@ function OwnerCarsContent() {
   const navigate = useNavigate()
   const [cars, setCars] = useState<Car[]>([])
   const [loading, setLoading] = useState(true)
-  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function OwnerCarsContent() {
     }
   }
 
-  const handleToggleAvailability = async (id: number) => {
+  const handleToggleAvailability = async (id: string) => {
     try {
       const updated = await carsApi.toggleAvailability(id)
       setCars((prev) => prev.map((c) => (c.id === id ? updated : c)))
@@ -65,6 +65,8 @@ function OwnerCarsContent() {
       // handle
     }
   }
+
+  const canEditCar = (car: Car) => car.status !== 'verified' && car.admin_approval_status !== 'APPROVED'
 
   if (loading) return <LoadingSkeleton type="card" count={3} />
 
@@ -116,7 +118,11 @@ function OwnerCarsContent() {
                       </div>
                       <div className="flex gap-2 mt-3">
                         <Button size="sm" variant="outline" onClick={() => navigate(`/cars/${car.id}`)}><Eye className="w-3 h-3 mr-1" /> View</Button>
-                        <Button size="sm" variant="outline" onClick={() => navigate(`/owner/cars/${car.id}/edit`)}><Edit className="w-3 h-3 mr-1" /> Edit</Button>
+                        {canEditCar(car) ? (
+                          <Button size="sm" variant="outline" onClick={() => navigate(`/owner/cars/${car.id}/edit`)}><Edit className="w-3 h-3 mr-1" /> Edit</Button>
+                        ) : (
+                          <Button size="sm" variant="outline" disabled><Edit className="w-3 h-3 mr-1" /> Approved</Button>
+                        )}
                         <Button size="sm" variant="outline" onClick={() => handleToggleAvailability(car.id)}>
                           <Power className="w-3 h-3 mr-1" /> {car.is_available ? 'Deactivate' : 'Activate'}
                         </Button>

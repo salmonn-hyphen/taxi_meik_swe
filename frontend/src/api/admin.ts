@@ -21,17 +21,17 @@ export const adminApi = {
     return res.data.data
   },
 
-  getUser: async (id: number): Promise<User> => {
+  getUser: async (id: string | number): Promise<User> => {
     const res = await apiClient.get(`/admin/users/${id}`)
     return res.data.data
   },
 
-  suspendUser: async (id: number, reason: string): Promise<User> => {
+  suspendUser: async (id: string | number, reason: string): Promise<User> => {
     const res = await apiClient.post(`/admin/users/${id}/suspend`, { reason })
     return res.data.data
   },
 
-  unsuspendUser: async (id: number): Promise<User> => {
+  unsuspendUser: async (id: string | number): Promise<User> => {
     const res = await apiClient.post(`/admin/users/${id}/unsuspend`)
     return res.data.data
   },
@@ -42,12 +42,12 @@ export const adminApi = {
     return res.data.data
   },
 
-  verifyOwner: async (userId: number, status: string, notes?: string): Promise<User> => {
+  verifyOwner: async (userId: string | number, status: string, notes?: string): Promise<User> => {
     const res = await apiClient.post(`/admin/verifications/owners/${userId}`, { status, notes })
     return res.data.data
   },
 
-  getOwnerDocuments: async (userId: number): Promise<OwnerDocument[]> => {
+  getOwnerDocuments: async (userId: string | number): Promise<OwnerDocument[]> => {
     const res = await apiClient.get(`/admin/users/${userId}/owner-documents`)
     return res.data.data
   },
@@ -68,12 +68,12 @@ export const adminApi = {
     return res.data.data
   },
 
-  verifyDriver: async (userId: number, status: string, notes?: string): Promise<User> => {
+  verifyDriver: async (userId: string | number, status: string, notes?: string): Promise<User> => {
     const res = await apiClient.post(`/admin/verifications/drivers/${userId}`, { status, notes })
     return res.data.data
   },
 
-  getDriverDocuments: async (userId: number): Promise<DriverDocument[]> => {
+  getDriverDocuments: async (userId: string | number): Promise<DriverDocument[]> => {
     const res = await apiClient.get(`/admin/users/${userId}/driver-documents`)
     return res.data.data
   },
@@ -84,12 +84,12 @@ export const adminApi = {
     return res.data.data
   },
 
-  verifyCar: async (carId: number, status: string, notes?: string): Promise<Car> => {
+  verifyCar: async (carId: string | number, status: string, notes?: string): Promise<Car> => {
     const res = await apiClient.post(`/admin/verifications/cars/${carId}`, { status, notes })
     return res.data.data
   },
 
-  getCarDocuments: async (carId: number): Promise<CarDocument[]> => {
+  getCarDocuments: async (carId: string | number): Promise<CarDocument[]> => {
     const res = await apiClient.get(`/admin/cars/${carId}/documents`)
     return res.data.data
   },

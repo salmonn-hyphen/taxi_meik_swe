@@ -11,6 +11,7 @@ import { profileSchema, type ProfileFormData } from '@/utils/validation'
 import { useAuth, useToast } from '@/providers'
 import { usersApi } from '@/api'
 import { getInitials } from '@/utils/format'
+import { AgreementListCard } from '@/components/shared/AgreementListCard'
 
 export function OwnerProfilePage() {
   const { user, updateUser } = useAuth()
@@ -38,6 +39,7 @@ export function OwnerProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold">Profile</h1>
+      <AgreementListCard />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card>
           <CardHeader>

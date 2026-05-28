@@ -35,34 +35,50 @@ export async function submitKYCDocuments(
     drivingLicenseBackUrl: string;
   }
 ) {
-  return prisma.driverProfile.upsert({
-    where: { userId: driverId },
-    create: {
-      userId: driverId,
-      nrcText: "",
-      nrcFrontImage: urls.nrcFrontUrl,
-      nrcBackImage: urls.nrcBackUrl,
-      driverLicenseImage: urls.drivingLicenseFrontUrl,
-      nrcFrontUrl: urls.nrcFrontUrl,
-      nrcBackUrl: urls.nrcBackUrl,
-      selfieUrl: urls.selfieUrl,
-      drivingLicenseUrl: urls.drivingLicenseFrontUrl,
-      drivingLicenseFrontUrl: urls.drivingLicenseFrontUrl,
-      drivingLicenseBackUrl: urls.drivingLicenseBackUrl,
-      kycStatus: "SUBMITTED",
-    },
-    update: {
-      nrcFrontImage: urls.nrcFrontUrl,
-      nrcBackImage: urls.nrcBackUrl,
-      driverLicenseImage: urls.drivingLicenseFrontUrl,
-      nrcFrontUrl: urls.nrcFrontUrl,
-      nrcBackUrl: urls.nrcBackUrl,
-      selfieUrl: urls.selfieUrl,
-      drivingLicenseUrl: urls.drivingLicenseFrontUrl,
-      drivingLicenseFrontUrl: urls.drivingLicenseFrontUrl,
-      drivingLicenseBackUrl: urls.drivingLicenseBackUrl,
-      kycStatus: "SUBMITTED",
-    },
+  return prisma.$transaction(async (tx) => {
+    const driverProfile = await tx.driverProfile.upsert({
+      where: { userId: driverId },
+      create: {
+        userId: driverId,
+        nrcText: "",
+        nrcFrontImage: urls.nrcFrontUrl,
+        nrcBackImage: urls.nrcBackUrl,
+        driverLicenseImage: urls.drivingLicenseFrontUrl,
+        nrcFrontUrl: urls.nrcFrontUrl,
+        nrcBackUrl: urls.nrcBackUrl,
+        selfieUrl: urls.selfieUrl,
+        drivingLicenseUrl: urls.drivingLicenseFrontUrl,
+        drivingLicenseFrontUrl: urls.drivingLicenseFrontUrl,
+        drivingLicenseBackUrl: urls.drivingLicenseBackUrl,
+        kycStatus: "SUBMITTED",
+        adminApprovalStatus: "PENDING",
+        approvedAt: null,
+      },
+      update: {
+        nrcFrontImage: urls.nrcFrontUrl,
+        nrcBackImage: urls.nrcBackUrl,
+        driverLicenseImage: urls.drivingLicenseFrontUrl,
+        nrcFrontUrl: urls.nrcFrontUrl,
+        nrcBackUrl: urls.nrcBackUrl,
+        selfieUrl: urls.selfieUrl,
+        drivingLicenseUrl: urls.drivingLicenseFrontUrl,
+        drivingLicenseFrontUrl: urls.drivingLicenseFrontUrl,
+        drivingLicenseBackUrl: urls.drivingLicenseBackUrl,
+        kycStatus: "SUBMITTED",
+        adminApprovalStatus: "PENDING",
+        approvedAt: null,
+      },
+    });
+
+    await tx.user.update({
+      where: { id: driverId },
+      data: {
+        verificationStatus: "PENDING",
+        isVerified: false,
+      },
+    });
+
+    return driverProfile;
   });
 }
 
@@ -89,12 +105,26 @@ export async function updateDriverKYCStatus(
   status: "APPROVED" | "REJECTED",
   rejectionReason?: string
 ) {
-  return prisma.driverProfile.update({
-    where: { id: driverProfileId },
-    data: {
-      kycStatus: status,
-      ...(rejectionReason ? { nrcText: rejectionReason } : {}),
-    },
+  return prisma.$transaction(async (tx) => {
+    const driverProfile = await tx.driverProfile.update({
+      where: { id: driverProfileId },
+      data: {
+        kycStatus: status,
+        adminApprovalStatus: status,
+        approvedAt: status === "APPROVED" ? new Date() : null,
+        ...(rejectionReason ? { nrcText: rejectionReason } : {}),
+      },
+    });
+
+    await tx.user.update({
+      where: { id: driverProfile.userId },
+      data: {
+        verificationStatus: status,
+        isVerified: status === "APPROVED",
+      },
+    });
+
+    return driverProfile;
   });
 }
 

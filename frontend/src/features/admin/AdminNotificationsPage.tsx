@@ -38,7 +38,7 @@ export function AdminNotificationsPage() {
     }
   }
 
-  const handleMarkRead = async (id: number) => {
+  const handleMarkRead = async (id: string | number) => {
     try {
       await notificationsApi.markAsRead(id)
       setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)))

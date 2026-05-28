@@ -256,8 +256,12 @@ model CarApplication {
   wardRecommendationLetter String? @map("ward_recommendation_letter")
 
   ownerApprovalStatus ApprovalStatus @default(PENDING) @map("owner_approval_status")
+  adminApprovalStatus ApprovalStatus @default(PENDING) @map("admin_approval_status")
 
   approvedAt DateTime? @map("approved_at")
+  agreementSentAt DateTime? @map("agreement_sent_at")
+  ownerAgreementAgreedAt DateTime? @map("owner_agreement_agreed_at")
+  driverAgreementAgreedAt DateTime? @map("driver_agreement_agreed_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -395,7 +399,7 @@ model Notification {
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   expiresAt DateTime
   token     String
   createdAt DateTime @default(now())
@@ -411,7 +415,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id @default(cuid())
+  id                    String    @id @default(uuid())
   accountId             String
   providerId            String
   userId                String    @db.Uuid

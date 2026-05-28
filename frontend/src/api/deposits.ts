@@ -2,14 +2,14 @@ import apiClient from './client'
 import type { Deposit } from '@/types'
 
 export const depositsApi = {
-  submitDeposit: async (bookingId: number, data: FormData): Promise<Deposit> => {
+  submitDeposit: async (bookingId: string | number, data: FormData): Promise<Deposit> => {
     const res = await apiClient.post(`/bookings/${bookingId}/deposits`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res.data.data
   },
 
-  getBookingDeposit: async (bookingId: number): Promise<Deposit> => {
+  getBookingDeposit: async (bookingId: string | number): Promise<Deposit> => {
     const res = await apiClient.get(`/bookings/${bookingId}/deposits`)
     return res.data.data
   },
@@ -24,17 +24,17 @@ export const depositsApi = {
     return res.data.data
   },
 
-  freezeDeposit: async (id: number): Promise<Deposit> => {
+  freezeDeposit: async (id: string | number): Promise<Deposit> => {
     const res = await apiClient.post(`/admin/deposits/${id}/freeze`)
     return res.data.data
   },
 
-  releaseDeposit: async (id: number): Promise<Deposit> => {
+  releaseDeposit: async (id: string | number): Promise<Deposit> => {
     const res = await apiClient.post(`/admin/deposits/${id}/release`)
     return res.data.data
   },
 
-  deductDeposit: async (id: number, amount: number, reason: string): Promise<Deposit> => {
+  deductDeposit: async (id: string | number, amount: number, reason: string): Promise<Deposit> => {
     const res = await apiClient.post(`/admin/deposits/${id}/deduct`, { amount, reason })
     return res.data.data
   },

@@ -10,8 +10,8 @@ import {
   DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import { useAuth } from '@/providers'
-import { usersApi } from '@/api'
-import { MOCK_BOOKINGS } from '@/mock-data/driver'
+import { bookingsApi, usersApi } from '@/api'
+import type { Booking } from '@/types'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { Car, Calendar, DollarSign, XCircle, ShieldAlert, Loader2 } from 'lucide-react'
 
@@ -19,8 +19,9 @@ export function DriverBookingsPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('all')
-  const [cancelId, setCancelId] = useState<number | null>(null)
-  const [localBookings, setLocalBookings] = useState(MOCK_BOOKINGS)
+  const [cancelId, setCancelId] = useState<string | number | null>(null)
+  const [bookings, setBookings] = useState<Booking[]>([])
+  const [loadingBookings, setLoadingBookings] = useState(true)
   
   const [kycStatus, setKycStatus] = useState<string>('PENDING')
   const [loadingKyc, setLoadingKyc] = useState(true)
@@ -47,28 +48,46 @@ export function DriverBookingsPage() {
     }
   }, [user])
 
-  const filtered = useMemo(() => {
-    if (activeTab === 'all') return localBookings
-    return localBookings.filter((b) => b.status === activeTab)
-  }, [activeTab, localBookings])
+  useEffect(() => {
+    if (kycStatus === 'APPROVED') {
+      loadBookings()
+    }
+  }, [activeTab, kycStatus])
 
-  const handleCancel = () => {
-    if (cancelId) {
-      setLocalBookings((prev) => prev.map((b) => b.id === cancelId ? { ...b, status: 'cancelled' } : b))
-      setCancelId(null)
+  const loadBookings = async () => {
+    try {
+      setLoadingBookings(true)
+      const params: { status?: string } = {}
+      if (activeTab !== 'all') params.status = activeTab
+      const res = await bookingsApi.getMyBookings(params)
+      setBookings(res.data)
+    } catch {
+      setBookings([])
+    } finally {
+      setLoadingBookings(false)
     }
   }
 
-  const handleRemove = (id: number) => {
-    setLocalBookings((prev) => prev.filter((b) => b.id !== id))
+  const filtered = useMemo(() => {
+    if (activeTab === 'all') return bookings
+    return bookings.filter((b) => b.status === activeTab)
+  }, [activeTab, bookings])
+
+  const handleCancel = async () => {
+    if (cancelId) {
+      await bookingsApi.cancelBooking(cancelId)
+      setCancelId(null)
+      loadBookings()
+    }
   }
 
   const tabCounts = {
-    all: localBookings.length,
-    requested: localBookings.filter((b) => b.status === 'requested').length,
-    active: localBookings.filter((b) => b.status === 'active').length,
-    completed: localBookings.filter((b) => b.status === 'completed').length,
-    cancelled: localBookings.filter((b) => b.status === 'cancelled').length,
+    all: bookings.length,
+    requested: bookings.filter((b) => b.status === 'requested').length,
+    accepted: bookings.filter((b) => b.status === 'accepted').length,
+    active: bookings.filter((b) => b.status === 'active').length,
+    completed: bookings.filter((b) => b.status === 'completed').length,
+    cancelled: bookings.filter((b) => b.status === 'cancelled').length,
   }
 
   if (loadingKyc) {
@@ -103,7 +122,7 @@ export function DriverBookingsPage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex-wrap">
-          {(['all', 'requested', 'active', 'completed', 'cancelled'] as const).map((tab) => (
+          {(['all', 'requested', 'accepted', 'active', 'completed', 'cancelled'] as const).map((tab) => (
             <TabsTrigger key={tab} value={tab} className="relative">
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
               <span className="ml-1.5 text-xs text-muted-foreground">({tabCounts[tab]})</span>
@@ -112,7 +131,9 @@ export function DriverBookingsPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {filtered.length === 0 ? (
+          {loadingBookings ? (
+            <div className="py-16 text-center text-sm text-muted-foreground">Loading bookings...</div>
+          ) : filtered.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <p className="text-lg">No bookings</p>
               <p className="text-sm">Browse cars to make a booking.</p>
@@ -137,16 +158,17 @@ export function DriverBookingsPage() {
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-2 shrink-0">
-                            <StatusBadge status={booking.status} type="booking" />
+                            <div className="flex flex-wrap justify-end gap-1.5">
+                              <StatusBadge status={booking.status} type="booking" />
+                              <StatusBadge status={booking.payment_status || booking.payment?.status || 'incomplete'} type="payment" />
+                            </div>
                             <div className="flex gap-1">
+                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => navigate(`/driver/bookings/${booking.id}`)}>
+                                Details
+                              </Button>
                               {(booking.status === 'requested' || booking.status === 'active') && (
                                 <Button size="sm" variant="ghost" className="text-red-500 h-7 px-2 text-xs" onClick={() => setCancelId(booking.id)}>
                                   <XCircle className="w-3.5 h-3.5 mr-1" /> Cancel
-                                </Button>
-                              )}
-                              {(booking.status === 'cancelled' || booking.status === 'completed') && (
-                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground" onClick={() => handleRemove(booking.id)}>
-                                  Remove
                                 </Button>
                               )}
                             </div>

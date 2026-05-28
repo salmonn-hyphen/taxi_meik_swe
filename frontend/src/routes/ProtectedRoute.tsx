@@ -5,6 +5,6 @@ interface ProtectedRouteProps {
   roles?: UserRole[]
 }
 
-export function ProtectedRoute({ children, _roles }: ProtectedRouteProps) {
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
   return <>{children}</>
 }

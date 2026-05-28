@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -11,9 +12,10 @@ import { formatDate, formatCurrency } from '@/utils/format'
 import { Car, Calendar, DollarSign, User } from 'lucide-react'
 
 export function AdminBookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([])
+  const [bookings, setBookings] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('all')
+  const [processingId, setProcessingId] = useState<string | null>(null)
 
   useEffect(() => {
     loadBookings()
@@ -21,6 +23,7 @@ export function AdminBookingsPage() {
 
   const loadBookings = async () => {
     try {
+      setLoading(true)
       const params: any = {}
       if (activeTab !== 'all') params.status = activeTab
       const res = await bookingsApi.getAll(params)
@@ -29,6 +32,22 @@ export function AdminBookingsPage() {
       // handle
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleAdminAction = async (booking: any, action: 'accept' | 'reject' | 'agreement') => {
+    try {
+      setProcessingId(booking.id)
+      if (action === 'accept') {
+        await bookingsApi.adminAcceptBooking(booking.id)
+      } else if (action === 'reject') {
+        await bookingsApi.adminRejectBooking(booking.id, 'Rejected by admin')
+      } else {
+        await bookingsApi.sendAgreement(booking.id)
+      }
+      await loadBookings()
+    } finally {
+      setProcessingId(null)
     }
   }
 
@@ -66,7 +85,28 @@ export function AdminBookingsPage() {
                             </div>
                           </div>
                         </div>
-                        <StatusBadge status={booking.status} type="booking" />
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <div className="flex flex-col items-end gap-1">
+                            <StatusBadge status={booking.status} type="booking" />
+                            <span className="text-[11px] text-muted-foreground">
+                              Owner: {booking.owner_approval_status || 'PENDING'} / Admin: {booking.admin_approval_status || 'PENDING'}
+                            </span>
+                            {booking.agreement_sent_at && (
+                              <span className="text-[11px] text-emerald-600">Agreement sent</span>
+                            )}
+                          </div>
+                          {booking.owner_approval_status === 'APPROVED' && booking.admin_approval_status === 'PENDING' && (
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="success" disabled={processingId === booking.id} onClick={() => handleAdminAction(booking, 'accept')}>Accept</Button>
+                              <Button size="sm" variant="destructive" disabled={processingId === booking.id} onClick={() => handleAdminAction(booking, 'reject')}>Reject</Button>
+                            </div>
+                          )}
+                          {booking.admin_approval_status === 'APPROVED' && !booking.agreement_sent_at && (
+                            <Button size="sm" disabled={processingId === booking.id} onClick={() => handleAdminAction(booking, 'agreement')}>
+                              Send Agreement
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

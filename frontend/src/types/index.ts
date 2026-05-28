@@ -27,6 +27,7 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 export const PaymentStatus = {
+  Incomplete: 'incomplete',
   Pending: 'pending',
   UnderReview: 'under_review',
   Confirmed: 'confirmed',
@@ -63,6 +64,7 @@ export const FuelType = {
   Petrol: 'petrol',
   Diesel: 'diesel',
   Electric: 'electric',
+  EV: 'ev',
   Hybrid: 'hybrid',
   CNG: 'cng',
 } as const
@@ -90,7 +92,7 @@ export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 // ===== USER TYPES =====
 export interface User {
-  id: number
+  id: string
   name: string
   email: string
   phone: string
@@ -104,23 +106,28 @@ export interface User {
 }
 
 export interface OwnerProfile {
-  id: number
-  user_id: number
-  nrc_number: string
+  id: string
+  user_id: string
+  nrc_text: string
+  nrc_number?: string
+  nrc_front_image: string
+  nrc_back_image: string
   address: string
   city: string
   township: string
-  phone_secondary: string | null
-  business_name: string | null
-  bio: string | null
+  admin_approval_status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'FREEZE'
+  approved_at: string | null
+  phone_secondary?: string | null
+  business_name?: string | null
+  bio?: string | null
   created_at: string
   updated_at: string
   user?: User
 }
 
 export interface OwnerDocument {
-  id: number
-  owner_profile_id: number
+  id: string
+  owner_profile_id: string
   type: string
   file_path: string
   file_url: string
@@ -161,13 +168,14 @@ export interface DriverDocument {
 
 // ===== CAR TYPES =====
 export interface Car {
-  id: number
-  owner_id: number
+  id: string
+  owner_id: string
   brand: string
   model: string
   year: number
   color: string
   license_plate: string
+  license_number?: string
   seat_capacity: number
   fuel_type: FuelType
   car_type: CarType
@@ -183,10 +191,22 @@ export interface Car {
   features: string[]
   status: VerificationStatus
   is_available: boolean
+  admin_approval_status?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'FREEZE'
   created_at: string
   updated_at: string
   owner?: User
   photos?: CarPhoto[]
+  owner_book?: string
+  rental_period?: string | null
+  rental_payment_type?: 'DAILY' | 'WEEKLY' | 'MONTHLY'
+  rental_type?: 'DRIVER_HOME' | 'OWNER_HOME'
+  rental_price?: number
+  images?: {
+    front_image: string
+    back_image: string
+    left_image: string
+    right_image: string
+  } | null
 }
 
 export interface CarPhoto {
@@ -211,10 +231,10 @@ export interface CarDocument {
 
 // ===== BOOKING TYPES =====
 export interface Booking {
-  id: number
-  car_id: number
-  driver_id: number
-  owner_id: number
+  id: string | number
+  car_id: string | number
+  driver_id: string | number
+  owner_id: string | number
   start_date: string
   end_date: string
   total_amount: number
@@ -228,37 +248,45 @@ export interface Booking {
   driver?: User
   owner?: User
   payment?: Payment
+  owner_payment?: Payment
   deposit?: Deposit
+  payment_status?: PaymentStatus | 'incomplete'
+  owner_payment_status?: PaymentStatus | 'incomplete'
+  deposit_status?: DepositStatus | 'incomplete'
   inspection_pre?: Inspection
   inspection_post?: Inspection
 }
 
 // ===== PAYMENT TYPES =====
 export interface Payment {
-  id: number
-  booking_id: number
-  user_id: number
+  id: string | number
+  booking_id: string | number
+  user_id: string | number
   amount: number
-  method: PaymentMethod
+  method: PaymentMethod | null
+  payer_role?: 'DRIVER' | 'OWNER'
+  payment_purpose?: string
+  commission_rate?: number
+  commission_amount?: number
   transaction_id: string | null
   screenshot_url: string | null
   status: PaymentStatus
   admin_notes: string | null
   paid_at: string | null
   confirmed_at: string | null
-  confirmed_by: number | null
+  confirmed_by: string | number | null
   created_at: string
   updated_at: string
 }
 
 // ===== DEPOSIT TYPES =====
 export interface Deposit {
-  id: number
-  booking_id: number
-  driver_id: number
+  id: string | number
+  booking_id: string | number
+  driver_id: string | number
   amount: number
   status: DepositStatus
-  payment_method: PaymentMethod
+  payment_method: PaymentMethod | null
   screenshot_url: string | null
   paid_at: string | null
   released_at: string | null
@@ -358,14 +386,14 @@ export interface AdminAction {
 
 // ===== NOTIFICATION TYPES =====
 export interface Notification {
-  id: number
-  user_id: number
+  id: string
+  user_id: string
   title: string
   message: string
   type: string
   is_read: boolean
   related_type: string | null
-  related_id: number | null
+  related_id: string | null
   created_at: string
 }
 
@@ -429,6 +457,10 @@ export interface OwnerDashboardStats {
   active_rentals: number
   pending_bookings: number
   total_earnings: number
+  agency_commission_rate?: number
+  agency_profit?: number
+  driver_total_paid?: number
+  owner_net_earning?: number
   monthly_earnings: { month: string; amount: number }[]
   recent_bookings: Booking[]
 }

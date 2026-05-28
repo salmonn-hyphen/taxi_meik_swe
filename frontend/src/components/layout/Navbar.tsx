@@ -33,7 +33,7 @@ export function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to={user?.role === 'admin' ? '/admin/profile' : `/${user?.role}/profile`}>
+              <Link to={user?.role === 'ADMIN' ? '/admin/profile' : `/${user?.role?.toLowerCase()}/profile`}>
                 <User className="w-4 h-4 mr-2" /> Profile
               </Link>
             </DropdownMenuItem>

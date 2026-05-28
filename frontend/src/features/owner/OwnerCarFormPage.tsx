@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -9,11 +7,57 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { carSchema, type CarFormData } from '@/utils/validation'
+import { FileUploader } from '@/components/shared/FileUploader'
 import { KYCLock } from '@/components/shared/KYCLock'
 import { carsApi } from '@/api'
 import { useToast } from '@/providers'
-import { MYANMAR_CITIES, FUEL_OPTIONS, CAR_TYPE_OPTIONS } from '@/constants'
+import type { Car } from '@/types'
+
+type CarPostForm = {
+  brand: string
+  model: string
+  year: string
+  color: string
+  license_number: string
+  fuel_type: 'petrol' | 'diesel' | 'electric' | ''
+  owner_book: string
+  rental_period: string
+  rental_payment_type: 'DAILY' | 'WEEKLY' | 'MONTHLY' | ''
+  rental_type: 'DRIVER_HOME' | 'OWNER_HOME' | ''
+  rental_price: string
+  deposit_amount: string
+}
+
+const initialForm: CarPostForm = {
+  brand: '',
+  model: '',
+  year: '',
+  color: '',
+  license_number: '',
+  fuel_type: '',
+  owner_book: '',
+  rental_period: '',
+  rental_payment_type: '',
+  rental_type: '',
+  rental_price: '',
+  deposit_amount: '0',
+}
+
+const imageLabels = [
+  { key: 'front_image', label: 'Front Image' },
+  { key: 'back_image', label: 'Back Image' },
+  { key: 'left_image', label: 'Left Image' },
+  { key: 'right_image', label: 'Right Image' },
+] as const
+
+function readFileData(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+}
 
 export function OwnerCarFormPage() {
   return (
@@ -28,55 +72,119 @@ function OwnerCarFormContent() {
   const navigate = useNavigate()
   const { addToast } = useToast()
   const [loading, setLoading] = useState(false)
-
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<CarFormData>({
-    resolver: zodResolver(carSchema),
-  })
+  const [initialLoading, setInitialLoading] = useState(!!id)
+  const [uploading, setUploading] = useState<string | null>(null)
+  const [form, setForm] = useState<CarPostForm>(initialForm)
+  const [images, setImages] = useState<Record<string, string>>({})
+  const isEditing = !!id
 
   useEffect(() => {
-    if (id) {
-      loadCar(Number(id))
-    }
-  }, [id])
+    if (!id) return
 
-  const loadCar = async (carId: number) => {
+    const loadCar = async () => {
+      try {
+        const car = await carsApi.getById(id)
+
+        if (car.status === 'verified' || car.admin_approval_status === 'APPROVED') {
+          addToast('Approved cars cannot be edited', 'error')
+          navigate('/owner/cars')
+          return
+        }
+
+        setForm(carToForm(car))
+        if (car.images) {
+          setImages({
+            front_image: car.images.front_image,
+            back_image: car.images.back_image,
+            left_image: car.images.left_image,
+            right_image: car.images.right_image,
+          })
+        }
+      } catch (err: any) {
+        addToast(err.response?.data?.error || 'Failed to load car', 'error')
+        navigate('/owner/cars')
+      } finally {
+        setInitialLoading(false)
+      }
+    }
+
+    loadCar()
+  }, [id, navigate, addToast])
+
+  const setField = (key: keyof CarPostForm, value: string) => {
+    setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  const handleImage = async (key: string, file: File) => {
     try {
-      const car = await carsApi.getById(carId)
-      Object.entries(car).forEach(([key, value]) => {
-        setValue(key as any, value as any)
-      })
-    } catch {
-      navigate('/owner/cars')
+      setUploading(key)
+      const data = await readFileData(file)
+      setImages((current) => ({ ...current, [key]: data }))
+    } finally {
+      setUploading(null)
     }
   }
 
-  const onSubmit = async (data: CarFormData) => {
+  const validate = () => {
+    const required: Array<keyof CarPostForm> = [
+      'brand',
+      'model',
+      'license_number',
+      'fuel_type',
+      'owner_book',
+      'rental_payment_type',
+      'rental_type',
+      'rental_price',
+    ]
+
+    if (required.some((key) => !String(form[key]).trim())) {
+      addToast('Please fill all required car fields', 'error')
+      return false
+    }
+
+    if (imageLabels.some((image) => !images[image.key])) {
+      addToast('Please upload all four car images', 'error')
+      return false
+    }
+
+    return true
+  }
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (!validate()) return
+
     try {
       setLoading(true)
-      const formData = new FormData()
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, String(value))
-        }
-      })
+      const payload = {
+        ...form,
+        year: form.year ? Number(form.year) : undefined,
+        rental_price: Number(form.rental_price),
+        deposit_amount: Number(form.deposit_amount || 0),
+        ...images,
+      }
 
-      if (id) {
-        await carsApi.update(Number(id), formData)
-        addToast('Car updated successfully', 'success')
+      if (isEditing && id) {
+        await carsApi.update(id, payload)
+        addToast('Car updated and sent back for admin approval', 'success')
       } else {
-        await carsApi.create(formData)
-        addToast('Car added successfully', 'success')
+        await carsApi.create(payload)
+        addToast('Car submitted for admin approval', 'success')
       }
       navigate('/owner/cars')
     } catch (err: any) {
-      addToast(err.response?.data?.message || 'Failed to save car', 'error')
+      addToast(err.response?.data?.error || 'Failed to post car', 'error')
     } finally {
       setLoading(false)
     }
   }
 
+  if (initialLoading) {
+    return <div className="max-w-4xl mx-auto"><Card><CardContent className="p-6 text-sm text-muted-foreground">Loading car...</CardContent></Card></div>
+  }
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
@@ -84,139 +192,107 @@ function OwnerCarFormContent() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card>
           <CardHeader>
-            <CardTitle>{id ? 'Edit Car' : 'Add New Car'}</CardTitle>
+            <CardTitle>{isEditing ? 'Edit Car' : 'Post Car'}</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
+            <form onSubmit={onSubmit} className="space-y-6">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Brand</Label>
-                  <Input placeholder="Toyota" {...register('brand')} />
-                  {errors.brand && <p className="text-xs text-red-500">{errors.brand.message}</p>}
+                  <Input value={form.brand} onChange={(event) => setField('brand', event.target.value)} placeholder="Toyota" />
                 </div>
                 <div className="space-y-2">
                   <Label>Model</Label>
-                  <Input placeholder="Crown" {...register('model')} />
-                  {errors.model && <p className="text-xs text-red-500">{errors.model.message}</p>}
+                  <Input value={form.model} onChange={(event) => setField('model', event.target.value)} placeholder="Crown" />
                 </div>
                 <div className="space-y-2">
                   <Label>Year</Label>
-                  <Input type="number" placeholder="2020" {...register('year', { valueAsNumber: true })} />
-                  {errors.year && <p className="text-xs text-red-500">{errors.year.message}</p>}
+                  <Input type="number" value={form.year} onChange={(event) => setField('year', event.target.value)} placeholder="2020" />
                 </div>
                 <div className="space-y-2">
                   <Label>Color</Label>
-                  <Input placeholder="White" {...register('color')} />
-                  {errors.color && <p className="text-xs text-red-500">{errors.color.message}</p>}
+                  <Input value={form.color} onChange={(event) => setField('color', event.target.value)} placeholder="White" />
                 </div>
                 <div className="space-y-2">
-                  <Label>License Plate</Label>
-                  <Input placeholder="YGN-1234" {...register('license_plate')} />
-                  {errors.license_plate && <p className="text-xs text-red-500">{errors.license_plate.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Seat Capacity</Label>
-                  <Input type="number" placeholder="4" {...register('seat_capacity', { valueAsNumber: true })} />
-                  {errors.seat_capacity && <p className="text-xs text-red-500">{errors.seat_capacity.message}</p>}
+                  <Label>License Number</Label>
+                  <Input value={form.license_number} onChange={(event) => setField('license_number', event.target.value)} placeholder="YGN-1234" />
                 </div>
                 <div className="space-y-2">
                   <Label>Fuel Type</Label>
-                  <Select onValueChange={(v) => setValue('fuel_type', v as any)}>
+                  <Select value={form.fuel_type} onValueChange={(value) => setField('fuel_type', value)}>
                     <SelectTrigger><SelectValue placeholder="Select fuel type" /></SelectTrigger>
                     <SelectContent>
-                      {FUEL_OPTIONS.map((f) => (
-                        <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                      ))}
+                      <SelectItem value="petrol">Petrol</SelectItem>
+                      <SelectItem value="diesel">Diesel</SelectItem>
+                      <SelectItem value="electric">EV</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.fuel_type && <p className="text-xs text-red-500">{errors.fuel_type.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Car Type</Label>
-                  <Select onValueChange={(v) => setValue('car_type', v as any)}>
-                    <SelectTrigger><SelectValue placeholder="Select car type" /></SelectTrigger>
-                    <SelectContent>
-                      {CAR_TYPE_OPTIONS.map((t) => (
-                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.car_type && <p className="text-xs text-red-500">{errors.car_type.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Transmission</Label>
-                  <Select onValueChange={(v) => setValue('transmission', v)}>
-                    <SelectTrigger><SelectValue placeholder="Select transmission" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="manual">Manual</SelectItem>
-                      <SelectItem value="auto">Automatic</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.transmission && <p className="text-xs text-red-500">{errors.transmission.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Mileage (km)</Label>
-                  <Input type="number" placeholder="50000" {...register('mileage', { valueAsNumber: true })} />
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Daily Rate (MMK)</Label>
-                  <Input type="number" placeholder="50000" {...register('daily_rate', { valueAsNumber: true })} />
-                  {errors.daily_rate && <p className="text-xs text-red-500">{errors.daily_rate.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label>Weekly Rate (MMK)</Label>
-                  <Input type="number" placeholder="300000" {...register('weekly_rate', { valueAsNumber: true })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Monthly Rate (MMK)</Label>
-                  <Input type="number" placeholder="1000000" {...register('monthly_rate', { valueAsNumber: true })} />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Deposit Amount (MMK)</Label>
-                <Input type="number" placeholder="200000" {...register('deposit_amount', { valueAsNumber: true })} />
-                {errors.deposit_amount && <p className="text-xs text-red-500">{errors.deposit_amount.message}</p>}
+                <Label>Owner Book</Label>
+                <Input value={form.owner_book} onChange={(event) => setField('owner_book', event.target.value)} placeholder="Owner book number or reference" />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label>City</Label>
-                  <Select onValueChange={(v) => setValue('city', v)}>
-                    <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
+                  <Label>Payment Type</Label>
+                  <Select value={form.rental_payment_type} onValueChange={(value) => setField('rental_payment_type', value)}>
+                    <SelectTrigger><SelectValue placeholder="Payment type" /></SelectTrigger>
                     <SelectContent>
-                      {MYANMAR_CITIES.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
+                      <SelectItem value="DAILY">Daily</SelectItem>
+                      <SelectItem value="WEEKLY">Weekly</SelectItem>
+                      <SelectItem value="MONTHLY">Monthly</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
                 </div>
                 <div className="space-y-2">
-                  <Label>Location</Label>
-                  <Input placeholder="Downtown" {...register('location')} />
-                  {errors.location && <p className="text-xs text-red-500">{errors.location.message}</p>}
+                  <Label>Rental Type</Label>
+                  <Select value={form.rental_type} onValueChange={(value) => setField('rental_type', value)}>
+                    <SelectTrigger><SelectValue placeholder="Rental type" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DRIVER_HOME">Driver Home</SelectItem>
+                      <SelectItem value="OWNER_HOME">Owner Home</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Rental Period</Label>
+                  <Input value={form.rental_period} onChange={(event) => setField('rental_period', event.target.value)} placeholder="e.g. 3 months" />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <textarea
-                  rows={3}
-                  className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                  placeholder="Car description..."
-                  {...register('description')}
-                />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Rental Price (MMK)</Label>
+                  <Input type="number" value={form.rental_price} onChange={(event) => setField('rental_price', event.target.value)} placeholder="50000" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Deposit Amount (MMK)</Label>
+                  <Input type="number" value={form.deposit_amount} onChange={(event) => setField('deposit_amount', event.target.value)} placeholder="200000" />
+                </div>
               </div>
 
-              <div className="flex gap-3 justify-end pt-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {imageLabels.map((image) => (
+                  <div key={image.key} className="space-y-2">
+                    <Label>{image.label}</Label>
+                    <FileUploader
+                      label={`${images[image.key] ? 'Replace' : 'Upload'} ${image.label}`}
+                      preview={images[image.key]}
+                      onUpload={(file) => handleImage(image.key, file)}
+                      uploading={uploading === image.key}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
                 <Button type="button" variant="outline" onClick={() => navigate('/owner/cars')}>Cancel</Button>
                 <Button type="submit" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Car'}
-                  <Save className="w-4 h-4 ml-2" />
+                  {loading ? 'Submitting...' : isEditing ? 'Update Car' : 'Submit Car'}
+                  <Save className="w-4 h-4" />
                 </Button>
               </div>
             </form>
@@ -225,4 +301,21 @@ function OwnerCarFormContent() {
       </motion.div>
     </div>
   )
+}
+
+function carToForm(car: Car): CarPostForm {
+  return {
+    brand: car.brand || '',
+    model: car.model || '',
+    year: car.year ? String(car.year) : '',
+    color: car.color || '',
+    license_number: car.license_number || car.license_plate || '',
+    fuel_type: car.fuel_type === 'ev' ? 'electric' : (car.fuel_type as CarPostForm['fuel_type']) || '',
+    owner_book: car.owner_book || '',
+    rental_period: car.rental_period || '',
+    rental_payment_type: car.rental_payment_type || '',
+    rental_type: car.rental_type || '',
+    rental_price: car.rental_price ? String(car.rental_price) : String(car.daily_rate || ''),
+    deposit_amount: String(car.deposit_amount || 0),
+  }
 }

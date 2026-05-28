@@ -1,6 +1,7 @@
 import apiClient from './client'
 import type { AuthResponse, LoginRequest, RegisterOwnerRequest, RegisterDriverRequest, User } from '@/types'
 import { authClient } from '@/lib/auth-client'
+import { normalizeVerificationStatus } from '@/constants'
 
 export const authApi = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
@@ -25,14 +26,14 @@ export const authApi = {
     }
 
     const baUser = response.data.user as any
-    const mappedUser: User = {
+    const sessionUser: User = {
       id: baUser.id as any,
       name: baUser.name,
       email: baUser.email,
       phone: baUser.phone || '',
       role: baUser.role as any,
       email_verified_at: baUser.emailVerified ? new Date().toISOString() : null,
-      verification_status: baUser.verificationStatus as any || 'unverified',
+      verification_status: normalizeVerificationStatus(baUser.verificationStatus) as any,
       suspension_reason: null,
       profile_photo_url: baUser.image || null,
       created_at: baUser.createdAt ? new Date(baUser.createdAt).toISOString() : new Date().toISOString(),
@@ -40,7 +41,7 @@ export const authApi = {
     }
 
     return {
-      user: mappedUser,
+      user: await authApi.me().catch(() => sessionUser),
       token: (response.data as any).session?.token || 'session-token',
     }
   },
@@ -73,23 +74,10 @@ export const authApi = {
   },
 
   me: async (): Promise<User> => {
-    const response = await authClient.getSession()
-    if (response.error || !response.data?.user) {
-      throw new Error('Not authenticated')
-    }
-    const baUser = response.data.user as any
+    const response = await apiClient.get('/user/profile')
     return {
-      id: baUser.id as any,
-      name: baUser.name,
-      email: baUser.email,
-      phone: baUser.phone || '',
-      role: baUser.role as any,
-      email_verified_at: baUser.emailVerified ? new Date().toISOString() : null,
-      verification_status: baUser.verificationStatus as any || 'unverified',
-      suspension_reason: null,
-      profile_photo_url: baUser.image || null,
-      created_at: baUser.createdAt ? new Date(baUser.createdAt).toISOString() : new Date().toISOString(),
-      updated_at: baUser.updatedAt ? new Date(baUser.updatedAt).toISOString() : new Date().toISOString(),
+      ...response.data.data,
+      verification_status: normalizeVerificationStatus(response.data.data.verification_status) as any,
     }
   },
 

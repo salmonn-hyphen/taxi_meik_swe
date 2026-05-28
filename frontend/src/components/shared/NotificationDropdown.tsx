@@ -4,8 +4,12 @@ import { Button } from '@/components/ui/button'
 import { notificationsApi } from '@/api'
 import type { Notification } from '@/types'
 import { timeAgo } from '@/utils/format'
+import { useAuth } from '@/providers'
+import { useNavigate } from 'react-router-dom'
 
 export function NotificationDropdown() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
@@ -38,7 +42,7 @@ export function NotificationDropdown() {
     }
   }
 
-  const handleMarkAsRead = async (id: number) => {
+  const handleMarkAsRead = async (id: string | number) => {
     try {
       await notificationsApi.markAsRead(id)
       setNotifications((prev) =>
@@ -47,6 +51,37 @@ export function NotificationDropdown() {
       setUnreadCount((prev) => Math.max(0, prev - 1))
     } catch {
       // ignore
+    }
+  }
+
+  const getNotificationPath = (notification: Notification) => {
+    if (notification.type === 'agreement_sent') {
+      const role = user?.role?.toLowerCase()
+      const id = notification.related_id || ''
+      if (role === 'owner') return `/owner/agreements/${id}`
+      if (role === 'driver') return `/driver/agreements/${id}`
+      if (role === 'admin') return `/admin/agreements/${id}`
+    }
+
+    if (notification.type?.startsWith('booking')) {
+      const role = user?.role?.toLowerCase()
+      if (role === 'owner') return '/owner/bookings'
+      if (role === 'driver') return '/driver/bookings'
+      if (role === 'admin') return '/admin/bookings'
+    }
+
+    return null
+  }
+
+  const handleNotificationClick = async (notification: Notification) => {
+    if (!notification.is_read) {
+      await handleMarkAsRead(notification.id)
+    }
+
+    const path = getNotificationPath(notification)
+    if (path) {
+      setOpen(false)
+      navigate(path)
     }
   }
 
@@ -95,7 +130,7 @@ export function NotificationDropdown() {
               notifications.slice(0, 20).map((notif) => (
                 <button
                   key={notif.id}
-                  onClick={() => handleMarkAsRead(notif.id)}
+                  onClick={() => handleNotificationClick(notif)}
                   className={`w-full text-left p-3 border-b last:border-0 hover:bg-muted/50 transition-colors ${!notif.is_read ? 'bg-primary/5' : ''}`}
                 >
                   <p className="text-sm font-medium">{notif.title}</p>

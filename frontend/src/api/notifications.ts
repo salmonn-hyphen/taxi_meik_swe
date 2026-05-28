@@ -7,7 +7,7 @@ export const notificationsApi = {
     return res.data.data
   },
 
-  markAsRead: async (id: number): Promise<void> => {
+  markAsRead: async (id: string | number): Promise<void> => {
     await apiClient.post(`/notifications/${id}/read`)
   },
 

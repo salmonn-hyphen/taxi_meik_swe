@@ -10,6 +10,7 @@ interface StatusBadgeProps {
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
+  incomplete: 'Incomplete',
   pending: 'Pending',
   under_review: 'Under Review',
   confirmed: 'Confirmed',
@@ -18,6 +19,7 @@ const PAYMENT_LABELS: Record<string, string> = {
 }
 
 const PAYMENT_COLORS: Record<string, string> = {
+  incomplete: 'bg-gray-100 text-gray-700',
   pending: 'bg-yellow-100 text-yellow-700',
   under_review: 'bg-blue-100 text-blue-700',
   confirmed: 'bg-green-100 text-green-700',
@@ -54,6 +56,7 @@ const DOCUMENT_COLORS: Record<string, string> = {
 }
 
 const DEPOSIT_LABELS: Record<string, string> = {
+  incomplete: 'Incomplete',
   held: 'Held',
   frozen: 'Frozen',
   released: 'Released',
@@ -61,6 +64,7 @@ const DEPOSIT_LABELS: Record<string, string> = {
 }
 
 const DEPOSIT_COLORS: Record<string, string> = {
+  incomplete: 'bg-gray-100 text-gray-700',
   held: 'bg-blue-100 text-blue-700',
   frozen: 'bg-red-100 text-red-700',
   released: 'bg-green-100 text-green-700',

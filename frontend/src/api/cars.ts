@@ -1,5 +1,5 @@
 import apiClient from './client'
-import type { Car, CarPhoto, CarDocument, PaginatedResponse, ApiResponse } from '@/types'
+import type { Car, CarPhoto, CarDocument, PaginatedResponse } from '@/types'
 
 export interface CarFilters {
   location?: string
@@ -16,30 +16,34 @@ export interface CarFilters {
 export const carsApi = {
   list: async (filters?: CarFilters): Promise<PaginatedResponse<Car>> => {
     const res = await apiClient.get('/cars', { params: filters })
+    if (res.data?.meta) {
+      return {
+        data: res.data.data,
+        current_page: res.data.meta.current_page,
+        last_page: res.data.meta.last_page,
+        per_page: res.data.meta.per_page,
+        total: res.data.meta.total,
+      }
+    }
     return res.data
   },
 
-  getById: async (id: number): Promise<Car> => {
+  getById: async (id: string | number): Promise<Car> => {
     const res = await apiClient.get(`/cars/${id}`)
     return res.data.data
   },
 
-  create: async (data: FormData): Promise<Car> => {
-    const res = await apiClient.post('/owner/cars', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+  create: async (data: Record<string, unknown>): Promise<Car> => {
+    const res = await apiClient.post('/owner/cars', data)
     return res.data.data
   },
 
-  update: async (id: number, data: FormData): Promise<Car> => {
-    data.append('_method', 'PUT')
-    const res = await apiClient.post(`/owner/cars/${id}`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+  update: async (id: string | number, data: Record<string, unknown>): Promise<Car> => {
+    const res = await apiClient.put(`/owner/cars/${id}`, data)
     return res.data.data
   },
 
-  delete: async (id: number): Promise<void> => {
+  delete: async (id: string | number): Promise<void> => {
     await apiClient.delete(`/owner/cars/${id}`)
   },
 
@@ -77,7 +81,7 @@ export const carsApi = {
     return res.data.data
   },
 
-  toggleAvailability: async (id: number): Promise<Car> => {
+  toggleAvailability: async (id: string | number): Promise<Car> => {
     const res = await apiClient.post(`/owner/cars/${id}/toggle-availability`)
     return res.data.data
   },

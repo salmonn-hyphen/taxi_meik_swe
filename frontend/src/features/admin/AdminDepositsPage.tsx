@@ -15,7 +15,7 @@ export function AdminDepositsPage() {
   const { addToast } = useToast()
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [loading, setLoading] = useState(true)
-  const [processing, setProcessing] = useState<number | null>(null)
+  const [processing, setProcessing] = useState<string | number | null>(null)
 
   useEffect(() => {
     loadDeposits()
@@ -36,7 +36,7 @@ export function AdminDepositsPage() {
     }
   }
 
-  const handleFreeze = async (id: number) => {
+  const handleFreeze = async (id: string | number) => {
     try {
       setProcessing(id)
       await depositsApi.freezeDeposit(id)
@@ -49,7 +49,7 @@ export function AdminDepositsPage() {
     }
   }
 
-  const handleRelease = async (id: number) => {
+  const handleRelease = async (id: string | number) => {
     try {
       setProcessing(id)
       await depositsApi.releaseDeposit(id)

@@ -1,9 +1,9 @@
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Shield, Car, Users, DollarSign, CheckCircle, Star, TrendingUp, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -11,9 +11,9 @@ const containerVariants = {
   },
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
 }
 
 export function LandingPage() {

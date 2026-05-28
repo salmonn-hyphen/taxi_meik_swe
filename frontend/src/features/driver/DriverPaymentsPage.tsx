@@ -32,7 +32,7 @@ export function DriverPaymentsPage() {
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><DollarSign className="w-5 h-5" /></div>
                   <div>
                     <p className="font-medium">{formatCurrency(payment.amount)}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{payment.method} &middot; {formatDate(payment.paid_at)}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{payment.method || 'No payment action'} &middot; {formatDate(payment.paid_at)}</p>
                   </div>
                 </div>
                 <StatusBadge status={payment.status} type="payment" />
