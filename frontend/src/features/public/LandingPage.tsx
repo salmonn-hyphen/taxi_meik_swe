@@ -1,7 +1,10 @@
 import { motion, type Variants } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Shield, Car, Users, DollarSign, CheckCircle, Star, TrendingUp, Sparkles } from 'lucide-react'
+import { ArrowRight, Shield, Car, Users, DollarSign, CheckCircle, Star, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/providers'
+import { getDashboardPath } from '@/utils/auth'
+import LandingImage from '@/assets/Landing Image.png'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -17,6 +20,8 @@ const itemVariants: Variants = {
 }
 
 export function LandingPage() {
+  const { isAuthenticated, user } = useAuth()
+
   return (
     <div className="text-white">
       {/* Hero */}
@@ -27,39 +32,49 @@ export function LandingPage() {
           <div className="absolute right-[-6rem] top-1/3 h-80 w-80 rounded-full bg-cyan-400/15 blur-3xl" />
           <div className="absolute bottom-[-6rem] left-1/4 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 lg:py-32 w-full">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-24 w-full">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
+            className="grid items-center gap-6 lg:grid-cols-2"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs text-white/70 backdrop-blur-xl"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-amber-400/80" />
-              Myanmar's trusted taxi rental platform
-            </motion.div>
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-              Myanmar's Trusted<br />
-              <span className="text-amber-400">Taxi Rental</span> Platform
-            </h1>
-            <p className="text-lg md:text-xl text-white/70 mb-8 max-w-xl mx-auto">
-              Connect car owners with verified taxi drivers. Safe, reliable rentals with full deposit protection and dispute resolution.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/register">
-                <Button size="lg" className="bg-amber-500 text-white hover:bg-amber-500/90 shadow-lg shadow-amber-500/20">
-                  Get Started <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button size="lg" variant="outline" className="border-white/30 bg-white/10 text-white/90 hover:bg-white/[0.18] backdrop-blur-xl">
-                  Sign In
-                </Button>
-              </Link>
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                Myanmar's Trusted<br />
+                <span className="text-amber-400">Taxi Rental</span> Platform
+              </h1>
+              <p className="text-lg md:text-xl text-white/70 mb-8 max-w-xl lg:mx-0 mx-auto">
+                Connect car owners with verified taxi drivers. Safe, reliable rentals with full deposit protection and dispute resolution.
+              </p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+                {isAuthenticated && user ? (
+                  <Link to={getDashboardPath(user.role)}>
+                    <Button size="lg" className="bg-amber-500 text-white hover:bg-amber-500/90 shadow-lg shadow-amber-500/20">
+                      Return To Dashboard <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/register">
+                      <Button size="lg" className="bg-amber-500 text-white hover:bg-amber-500/90 shadow-lg shadow-amber-500/20">
+                        Get Started <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                    <Link to="/login">
+                      <Button size="lg" variant="outline" className="border-white/30 bg-white/10 text-white/90 hover:bg-white/[0.18] backdrop-blur-xl">
+                        Sign In
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="hidden lg:flex justify-end">
+              <img
+                src={LandingImage}
+                alt="Taxi car"
+                className="w-full max-w-3xl lg:scale-105 transition-transform object-contain drop-shadow-[0_20px_50px_rgba(2,132,199,0.35)]"
+              />
             </div>
           </motion.div>
         </div>

@@ -1,14 +1,15 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-import type { User, LoginRequest, RegisterOwnerRequest, RegisterDriverRequest } from '@/types'
+import type { User, LoginRequest, RegisterOwnerRequest, RegisterDriverRequest, AuthResponse } from '@/types'
 import { UserRole } from '@/types'
 import { authApi } from '@/api'
+import { getDashboardPath } from '@/utils/auth'
 
 interface AuthContextType {
   user: User | null
   token: string | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (data: LoginRequest) => Promise<void>
+  login: (data: LoginRequest) => Promise<AuthResponse>
   registerOwner: (data: RegisterOwnerRequest) => Promise<void>
   registerDriver: (data: RegisterDriverRequest) => Promise<void>
   logout: () => Promise<void>
@@ -17,29 +18,43 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const USER_CACHE_KEY = 'auth_user_cache'
+const TOKEN_CACHE_KEY = 'auth_token_cache'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('user')
     try {
-      return saved ? JSON.parse(saved) : null
+      if (typeof window !== 'undefined' && localStorage.getItem('auth_logged_out')) {
+        return null
+      }
+      const cached = sessionStorage.getItem(USER_CACHE_KEY)
+      if (!cached) return null
+      return JSON.parse(cached) as User
     } catch {
       return null
     }
   })
   const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('token')
+    try {
+      if (typeof window !== 'undefined' && localStorage.getItem('auth_logged_out')) {
+        return null
+      }
+      return sessionStorage.getItem(TOKEN_CACHE_KEY)
+    } catch {
+      return null
+    }
   })
   const [isLoading, setIsLoading] = useState(true)
 
   const isAuthenticated = !!user && !!token
 
   const refreshUser = useCallback(async () => {
-    const currentUser = await authApi.me()
-    setUser(currentUser)
-    setToken(localStorage.getItem('token') || 'session-token')
-    localStorage.setItem('user', JSON.stringify(currentUser))
-    return currentUser
+    const currentSession = await authApi.me()
+    setUser(currentSession.user)
+    setToken(currentSession.token)
+    sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(currentSession.user))
+    sessionStorage.setItem(TOKEN_CACHE_KEY, currentSession.token || 'cookie-session')
+    return currentSession.user
   }, [])
 
   useEffect(() => {
@@ -49,8 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         setUser(null)
         setToken(null)
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        sessionStorage.removeItem(USER_CACHE_KEY)
+        sessionStorage.removeItem(TOKEN_CACHE_KEY)
       } finally {
         setIsLoading(false)
       }
@@ -71,17 +86,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('focus', handleFocus)
   }, [isAuthenticated, refreshUser])
 
-  const login = useCallback(async (data: LoginRequest) => {
-    setIsLoading(true)
-    try {
-      const response = await authApi.login(data)
-      setUser(response.user)
-      setToken(response.token)
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
-    } finally {
-      setIsLoading(false)
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'auth_logged_out') {
+        setUser(null)
+        setToken(null)
+        sessionStorage.removeItem(USER_CACHE_KEY)
+        sessionStorage.removeItem(TOKEN_CACHE_KEY)
+      }
     }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
+  const login = useCallback(async (data: LoginRequest) => {
+    const response = await authApi.login(data)
+    setUser(response.user)
+    setToken(response.token)
+    sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(response.user))
+    sessionStorage.setItem(TOKEN_CACHE_KEY, response.token || 'cookie-session')
+    return response
   }, [])
 
   const registerOwner = useCallback(async (_data: RegisterOwnerRequest) => {
@@ -91,23 +115,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(async () => {
-    setIsLoading(true)
+    // Prevent immediate auto-refresh re-auth which may happen if server refresh token still valid.
+    try {
+      sessionStorage.setItem('skip_refresh', '1')
+    } catch (e) {
+      // ignore
+    }
+
     try {
       await authApi.logout()
     } catch (err) {
       console.error('Logout error:', err)
     } finally {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
       setToken(null)
       setUser(null)
-      setIsLoading(false)
+      sessionStorage.removeItem(USER_CACHE_KEY)
+      sessionStorage.removeItem(TOKEN_CACHE_KEY)
+      try { localStorage.setItem('auth_logged_out', Date.now().toString()) } catch {}
+      // keep skip_refresh until consumed by authApi.me to avoid immediate silent refresh
     }
   }, [])
 
   const updateUser = useCallback((updatedUser: User) => {
     setUser(updatedUser)
-    localStorage.setItem('user', JSON.stringify(updatedUser))
+    sessionStorage.setItem(USER_CACHE_KEY, JSON.stringify(updatedUser))
   }, [])
 
   return (
@@ -147,3 +178,5 @@ export function useRole() {
     role: user?.role,
   }
 }
+
+export { getDashboardPath }

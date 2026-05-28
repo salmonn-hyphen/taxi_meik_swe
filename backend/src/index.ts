@@ -10,8 +10,15 @@ import { auth } from './lib/auth.js';
 import prisma from './lib/prisma.js';
 import crypto from 'crypto';
 import type { Request, Response } from 'express';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
+import authRouter from '../routes/authRoutes.js';
+
 import driverRouter from '../routes/driverRoutes.js';
 import adminRouter from '../routes/admin/apiRoutes.js';
+import contactRouter from '../routes/contactRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +46,11 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:5174",
 ]);
 
+// Security headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
+
 // Enable CORS
 app.use(cors({
   origin: (origin, callback) => {
@@ -50,6 +62,21 @@ app.use(cors({
     callback(new Error(`CORS blocked origin: ${origin}`));
   },
   credentials: true,
+}));
+
+// Parse cookies
+app.use(cookieParser());
+
+// JSON parser for our custom routes. KYC/car images are sent as data URLs for now.
+app.use(express.json({ limit: "80mb" }));
+
+// Global rate limit
+app.use('/api/', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
 }));
 
 // JSON parser for our custom routes. KYC/car images are sent as data URLs for now.
@@ -67,18 +94,42 @@ type AuthUser = {
 type PaymentPayerRole = "DRIVER" | "OWNER";
 
 async function getAuthUser(req: Request): Promise<AuthUser | null> {
+  // 1. Try Better Auth session
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers),
   });
 
-  if (!session?.user) return null;
+  if (session?.user) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true, role: true },
+    });
+    if (user) return user;
+  }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { id: true, role: true },
-  });
+  // 2. Try cookie-based session from dev/frontend auth mechanism
+  const accessToken = req.cookies?.accessToken || req.cookies?.session;
+  if (accessToken) {
+    const account = await prisma.account.findFirst({
+      where: {
+        accessToken,
+        accessTokenExpiresAt: { gt: new Date() },
+      },
+      select: {
+        userId: true,
+      },
+    });
 
-  return user;
+    if (account) {
+      const user = await prisma.user.findUnique({
+        where: { id: account.userId },
+        select: { id: true, role: true },
+      });
+      if (user) return user as AuthUser;
+    }
+  }
+
+  return null;
 }
 
 async function requireUser(req: Request, res: Response, roles?: AuthUser["role"][]) {
@@ -510,236 +561,7 @@ function serializeNotification(notification: any) {
 app.use('/uploads/kyc', express.static(path.resolve(__dirname, '../uploads/kyc')));
 app.use('/uploads/payments', express.static(paymentUploadDir));
 
-// ─── Temporary in-memory store for pending registrations ──────────────────────
-interface PendingRegistration {
-  data: any;
-  expiresAt: number;
-}
-const pendingRegistrations = new Map<string, PendingRegistration>();
-
-// Cleanup expired registrations every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [token, value] of pendingRegistrations.entries()) {
-    if (value.expiresAt < now) pendingRegistrations.delete(token);
-  }
-}, 5 * 60 * 1000);
-
-// ─── STEP 1: Submit Registration Form & Send OTP ──────────────────────────────
-// IMPORTANT: Must be registered BEFORE Better Auth's catch-all handler
-app.post("/api/register-request", async (req, res) => {
-  try {
-    const data = req.body;
-    const { email, phone, password, name, role } = data;
-
-    if (!email || !phone || !password || !name || !role) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
-    const existingEmail = await prisma.user.findUnique({ where: { email } });
-    if (existingEmail) {
-      return res.status(400).json({ error: "Email is already registered" });
-    }
-
-    const existingPhone = await prisma.user.findUnique({ where: { phone } });
-    if (existingPhone) {
-      return res.status(400).json({ error: "Phone number is already registered" });
-    }
-
-    // Generate 6-digit OTP
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Store registration data temporarily (10 min expiry)
-    const tempToken = crypto.randomUUID();
-    pendingRegistrations.set(tempToken, {
-      data,
-      expiresAt: Date.now() + 10 * 60 * 1000,
-    });
-
-    // Upsert OTP into Verification table (5 min expiry)
-    await prisma.verification.deleteMany({ where: { identifier: phone } });
-    await prisma.verification.create({
-      data: {
-        id: crypto.randomUUID(),
-        identifier: phone,
-        value: otpCode,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
-      },
-    });
-
-    // Log to console (replace with real SMS in production)
-    console.log("OTP Code:", otpCode);
-    console.log(`\n╔═══════════════════════════╗`);
-    console.log(`║    REGISTER OTP SENT      ║`);
-    console.log(`╠═══════════════════════════╣`);
-    console.log(`║ Phone: ${phone.padEnd(18)}║`);
-    console.log(`║ Code:  ${otpCode.padEnd(18)}║`);
-    console.log(`╚═══════════════════════════╝\n`);
-
-    return res.json({ success: true, message: "OTP sent successfully", tempToken, code: otpCode });
-
-  } catch (error: any) {
-    console.error("Register request error:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// ─── STEP 2: Verify OTP & Create Account ──────────────────────────────────────
-// IMPORTANT: Must be registered BEFORE Better Auth's catch-all handler
-app.post("/api/register-verify", async (req, res) => {
-  try {
-    const { tempToken, code } = req.body;
-
-    if (!tempToken || !code) {
-      return res.status(400).json({ error: "Missing verification parameters" });
-    }
-
-    const registration = pendingRegistrations.get(tempToken);
-    if (!registration || registration.expiresAt < Date.now()) {
-      return res.status(400).json({ error: "Registration session expired or invalid" });
-    }
-
-    const regData = registration.data;
-
-    // Validate OTP against the Verification table
-    const verification = await prisma.verification.findFirst({
-      where: {
-        identifier: regData.phone,
-        value: code,
-        expiresAt: { gt: new Date() },
-      },
-    });
-
-    if (!verification) {
-      return res.status(400).json({ error: "Invalid or expired OTP code" });
-    }
-
-    const existingVerifiedFields = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { phone: regData.phone },
-          ...(regData.nrc_number ? [{ nrcNumber: regData.nrc_number }] : []),
-        ],
-      },
-      select: { phone: true, nrcNumber: true },
-    });
-
-    if (existingVerifiedFields?.phone === regData.phone) {
-      return res.status(400).json({ error: "Phone number is already registered" });
-    }
-
-    if (regData.nrc_number && existingVerifiedFields?.nrcNumber === regData.nrc_number) {
-      return res.status(400).json({ error: "NRC number is already registered" });
-    }
-
-    let newUser: Awaited<ReturnType<typeof auth.api.signUpEmail>> | null = null;
-
-    try {
-      // Create user via Better Auth (handles password hashing)
-      newUser = await auth.api.signUpEmail({
-        body: {
-          email: regData.email,
-          password: regData.password,
-          name: regData.name,
-          role: regData.role,
-        },
-      });
-
-      if (!newUser?.user) {
-        return res.status(500).json({ error: "Failed to create user account" });
-      }
-
-      // Patch user with custom fields
-      const updatedUser = await prisma.user.update({
-        where: { id: newUser.user.id },
-        data: {
-          phone: regData.phone,
-          role: regData.role,
-          nrcNumber: regData.nrc_number || null,
-          city: regData.city || null,
-          township: regData.township || null,
-          address: regData.address || null,
-          phoneNumberVerified: true,
-          isVerified: false,
-          verificationStatus: "PENDING",
-        },
-      });
-
-      // If driver, create DriverLicense record
-      if (regData.role === "DRIVER" && regData.license_number) {
-        await prisma.driverLicense.create({
-          data: {
-            id: crypto.randomUUID(),
-            userId: updatedUser.id,
-            licenseNumber: regData.license_number,
-            licenseClass: "B",
-            expiryDate: new Date(
-              regData.license_expiry || Date.now() + 5 * 365 * 24 * 60 * 60 * 1000
-            ),
-            documentUrl: regData.nrc_document_url || "",
-            yearsExperience: regData.years_experience || 0,
-            status: "PENDING",
-          },
-        });
-      }
-
-      if (regData.role === "OWNER") {
-        await prisma.ownerProfile.create({
-          data: {
-            id: crypto.randomUUID(),
-            userId: updatedUser.id,
-            address: regData.address || null,
-            nrcText: regData.nrc_number || "",
-            nrcFrontImage: "",
-            nrcBackImage: "",
-            adminApprovalStatus: "PENDING",
-          },
-        });
-      }
-    } catch (error: any) {
-      if (newUser?.user?.id) {
-        await prisma.user.delete({ where: { id: newUser.user.id } }).catch(() => null);
-      }
-
-      if (error?.code === "P2002") {
-        const target = Array.isArray(error.meta?.target) ? error.meta.target.join(", ") : error.meta?.target;
-        return res.status(400).json({ error: `${target || "A unique field"} is already registered` });
-      }
-
-      throw error;
-    }
-
-    // Clean up only after account creation succeeds, so failed attempts can be retried.
-    await prisma.verification.delete({ where: { id: verification.id } });
-    pendingRegistrations.delete(tempToken);
-
-    return res.json({ success: true, message: "Registration completed successfully" });
-
-  } catch (error: any) {
-    console.error("Register verification error:", error);
-    return res.status(500).json({ error: error.message || "Internal server error" });
-  }
-});
-
-// Get email by phone number (used to sign in via Better Auth using phone input)
-app.get("/api/get-email-by-phone", async (req, res) => {
-  try {
-    const phone = req.query.phone;
-    if (!phone || typeof phone !== "string") {
-      return res.status(400).json({ error: "Phone number is required" });
-    }
-    const user = await prisma.user.findUnique({
-      where: { phone },
-      select: { email: true }
-    });
-    if (!user) {
-      return res.status(404).json({ error: "No account found with this phone number" });
-    }
-    return res.json({ email: user.email });
-  } catch (error: any) {
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
+app.use("/api", authRouter);
 
 // Mount driver routes
 app.use("/api/driver", driverRouter);
@@ -2861,6 +2683,9 @@ app.delete("/api/owner/cars/:carId", async (req, res) => {
 
 // ─── Better Auth Route Handler (catch-all — must come LAST) ───────────────────
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+// Mount public routes
+app.use("/api", contactRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

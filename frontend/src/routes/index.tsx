@@ -3,6 +3,7 @@ import { PublicLayout } from '@/layouts/PublicLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { ProtectedRoute } from './ProtectedRoute'
+import { GuestRoute } from './GuestRoute'
 import { UserRole } from '@/types'
 
 // Public pages
@@ -80,10 +81,10 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
-      { path: 'forgot-password', element: <ForgotPasswordPage /> },
-      { path: 'reset-password/:token', element: <ResetPasswordPage /> },
+      { path: 'login', element: <GuestRoute><LoginPage /></GuestRoute> },
+      { path: 'register', element: <GuestRoute><RegisterPage /></GuestRoute> },
+      { path: 'forgot-password', element: <GuestRoute><ForgotPasswordPage /></GuestRoute> },
+      { path: 'reset-password/:token', element: <GuestRoute><ResetPasswordPage /></GuestRoute> },
     ],
   },
 

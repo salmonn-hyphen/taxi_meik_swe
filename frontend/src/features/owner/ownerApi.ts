@@ -24,9 +24,9 @@ export const ownersApi = {
     return withProfit({
       total_cars: 4,
       verified_cars: 3,
-      active_rentals: 0,
-      pending_bookings: 0,
-      total_earnings: 0,
+      active_rentals: 2,
+      pending_bookings: 1,
+      total_earnings: 12000000,
       monthly_earnings: [
         { month: 'Jan', amount: 0 },
         { month: 'Feb', amount: 0 },

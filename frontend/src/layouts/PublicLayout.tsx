@@ -3,9 +3,13 @@ import { Menu, X, Car } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/constants";
+import { useAuth } from "@/providers";
+import { getDashboardPath } from "@/utils/auth";
+import Logo from "@/assets/Logo.svg";
 
 export function PublicLayout() {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-white">
@@ -15,13 +19,17 @@ export function PublicLayout() {
             to="/"
             className="flex items-center gap-2 font-bold text-xl text-white"
           >
-            <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white">
-              <Car className="w-4 h-4" />
-            </div>
+            <img src={Logo} alt="Taxi Meik logo" className="h-9 w-auto object-contain" />
             {APP_NAME}
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
+            <Link
+              to="/"
+              className="text-sm text-white/70 hover:text-white transition-colors"
+            >
+              Home
+            </Link>
             <Link
               to="/about"
               className="text-sm text-white/70 hover:text-white transition-colors"
@@ -43,19 +51,29 @@ export function PublicLayout() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login">
-              <Button
-                variant="ghost"
-                className="text-white/70 hover:bg-white/[0.18] hover:text-white/90 "
-              >
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="bg-amber-500 text-white hover:bg-amber-500/90">
-                Get Started
-              </Button>
-            </Link>
+            {isAuthenticated && user ? (
+              <Link to={getDashboardPath(user.role)}>
+                <Button className="bg-amber-500 text-white hover:bg-amber-500/90">
+                  Return To Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button
+                    variant="ghost"
+                    className="text-white/70 hover:bg-white/[0.18] hover:text-white/90 "
+                  >
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="bg-amber-500 text-white hover:bg-amber-500/90">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <button
@@ -74,6 +92,13 @@ export function PublicLayout() {
               onClick={() => setMobileMenu(false)}
             >
               Browse Cars
+            </Link>
+            <Link
+              to="/"
+              className="block text-sm text-white/60"
+              onClick={() => setMobileMenu(false)}
+            >
+              Home
             </Link>
             <Link
               to="/about"
@@ -97,19 +122,29 @@ export function PublicLayout() {
               FAQ
             </Link>
             <div className="flex gap-3 pt-2 border-t border-white/10">
-              <Link to="/login" className="flex-1">
-                <Button
-                  variant="outline"
-                  className="w-full   border-white/20 text-white"
-                >
-                  Login
-                </Button>
-              </Link>
-              <Link to="/register" className="flex-1">
-                <Button className="w-full bg-amber-500 text-white hover:bg-amber-500/90">
-                  Register
-                </Button>
-              </Link>
+              {isAuthenticated && user ? (
+                <Link to={getDashboardPath(user.role)} className="flex-1">
+                  <Button className="w-full bg-amber-500 text-white hover:bg-amber-500/90">
+                    Return To Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="w-full   border-white/20 text-white"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register" className="flex-1">
+                    <Button className="w-full bg-amber-500 text-white hover:bg-amber-500/90">
+                      Register
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   Car,
-  CalendarDays,
   Eye,
   EyeOff,
   Hash,
@@ -43,6 +42,7 @@ import {
 } from "@/utils/validation";
 import { z } from "zod";
 import { useAuth, useToast } from "@/providers";
+import { getDashboardPath } from "@/utils/auth";
 import { MYANMAR_CITIES } from "@/constants";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/Logo.svg";
@@ -668,7 +668,7 @@ function DriverStepTwo({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-1">
           <Label htmlFor="driver-license-number" className="text-white/80">
             License Number
@@ -689,27 +689,7 @@ function DriverStepTwo({
           )}
         </div>
 
-        <div className="space-y-2 sm:col-span-1">
-          <Label htmlFor="driver-license-expiry" className="text-white/80">
-            License Expiry
-          </Label>
-          <div className="relative">
-            <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              id="driver-license-expiry"
-              type="date"
-              className={`pl-10 ${glassInputClass}`}
-              {...register("license_expiry")}
-            />
-          </div>
-          {errors.license_expiry && (
-            <p className="text-xs text-rose-200">
-              {errors.license_expiry.message}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2 sm:col-span-1">
+        <div className="space-y-2 sm:col-span-2">
           <Label htmlFor="driver-years-experience" className="text-white/80">
             Year of Experience
           </Label>
@@ -852,7 +832,6 @@ function DriverRegisterFlow({ onRegister }: { onRegister: (data: any) => Promise
     city: "",
     township: "",
     license_number: "",
-    license_expiry: "",
     years_experience: 0,
   });
 
@@ -948,12 +927,12 @@ export function RegisterPage() {
       if (response.success) {
         addToast("Verification successful! Logging in...", "success");
         // Log in the user using the credentials from savedFormData
-        await login({
+        const loginResponse = await login({
           phone: savedFormData.phone,
           password: savedFormData.password,
         });
         setShowOtpModal(false);
-        navigate(role === "driver" ? "/driver" : "/owner", { replace: true });
+        navigate(getDashboardPath(loginResponse.user.role), { replace: true });
       }
     } catch (err: any) {
       addToast(err.response?.data?.error || err.message || "Verification failed", "error");
