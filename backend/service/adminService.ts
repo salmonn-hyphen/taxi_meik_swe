@@ -1,4 +1,4 @@
-import { getPendingKYCDrivers, updateDriverKYCStatus, getKYCHistoryDrivers } from "../respositry/driverRespository.js";
+import { getPendingKYCDrivers, updateDriverKYCStatus, getKYCHistoryDrivers } from "../repositry/driverRespository.js";
 
 export async function getSubmittedKYCDrivers() {
   return getPendingKYCDrivers();

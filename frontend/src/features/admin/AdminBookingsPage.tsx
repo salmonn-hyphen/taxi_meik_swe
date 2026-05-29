@@ -77,10 +77,31 @@ export function AdminBookingsPage() {
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><Car className="w-5 h-5" /></div>
                           <div>
                             <p className="font-medium">Booking #{booking.id}</p>
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-1">
-                              <span className="flex items-center gap-1"><Car className="w-3 h-3" /> {booking.car?.brand || 'N/A'}</span>
-                              <span className="flex items-center gap-1"><User className="w-3 h-3" /> Driver: {booking.driver?.name || 'N/A'}</span>
-                              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(booking.start_date)}</span>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground mt-1">
+                              <span className="flex items-center gap-1.5">
+                                <Car className="w-3.5 h-3.5" />
+                                <span>Car: <strong>{booking.car?.brand || 'N/A'}</strong></span>
+                                {booking.car?.status && (
+                                  <StatusBadge status={booking.car.status} type="verification" />
+                                )}
+                              </span>
+                              <span className="flex items-center gap-1.5">
+                                <User className="w-3.5 h-3.5" />
+                                <span>Driver: <strong>{booking.driver?.name || 'N/A'}</strong></span>
+                                {booking.driver?.verification_status && (
+                                  <StatusBadge status={booking.driver.verification_status} type="verification" />
+                                )}
+                              </span>
+                              <span className="flex items-center gap-1.5">
+                                <User className="w-3.5 h-3.5" />
+                                <span>Owner: <strong>{booking.owner?.name || 'N/A'}</strong></span>
+                                {booking.owner?.verification_status && (
+                                  <StatusBadge status={booking.owner.verification_status} type="verification" />
+                                )}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mt-2 pt-2 border-t border-dashed">
+                              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(booking.start_date)} - {formatDate(booking.end_date)}</span>
                               <span className="flex items-center gap-1"><DollarSign className="w-3 h-3" /> {formatCurrency(booking.total_amount)}</span>
                             </div>
                           </div>

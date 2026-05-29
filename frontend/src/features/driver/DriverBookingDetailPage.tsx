@@ -88,8 +88,8 @@ export function DriverBookingDetailPage() {
       addToast('Payment submitted for review', 'success')
       setShowPaymentForm(false)
       loadBooking(booking.id)
-    } catch {
-      addToast('Payment upload failed', 'error')
+    } catch (err: any) {
+      addToast(err?.response?.data?.error || 'Payment upload failed', 'error')
     }
   }
 
@@ -103,8 +103,8 @@ export function DriverBookingDetailPage() {
       addToast('Deposit submitted', 'success')
       setShowDepositForm(false)
       loadBooking(booking.id)
-    } catch {
-      addToast('Deposit upload failed', 'error')
+    } catch (err: any) {
+      addToast(err?.response?.data?.error || 'Deposit upload failed', 'error')
     }
   }
 

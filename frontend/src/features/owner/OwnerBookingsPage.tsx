@@ -99,7 +99,12 @@ function OwnerBookingsContent() {
                             <User className="w-5 h-5" />
                           </div>
                           <div>
-                            <p className="font-medium">{booking.driver?.name || `Driver #${booking.driver_id}`}</p>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="font-medium">{booking.driver?.name || `Driver #${booking.driver_id}`}</p>
+                              {booking.driver?.verification_status && (
+                                <StatusBadge status={booking.driver.verification_status} type="verification" />
+                              )}
+                            </div>
                             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-1">
                               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(booking.start_date)} - {formatDate(booking.end_date)}</span>
                               <span className="flex items-center gap-1"><DollarSign className="w-3 h-3" /> {formatCurrency(booking.total_amount)}</span>

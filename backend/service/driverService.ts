@@ -1,4 +1,4 @@
-import { findUserByPhone, updateDriverProfile, findDriverProfileByUserId, submitKYCDocuments } from "../respositry/driverRespository.js";
+import { findUserByPhone, updateDriverProfile, findDriverProfileByUserId, submitKYCDocuments } from "../repositry/driverRespository.js";
 import { hashPassword } from "better-auth/crypto";
 
 export async function updateProfile(userId: string, data: { name: string; phone: string; password?: string; address?: string; bio?: string }) {
