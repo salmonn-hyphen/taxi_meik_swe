@@ -1,0 +1,1483 @@
+[
+    {
+        "value": "1",
+        "label": {
+            "en": "Kachin",
+            "mm": "ကချင်ပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "AHGAYA",
+                "code_mm": "အကယ",
+                "label": { "en": "Ingayan", "mm": "အင်ဂျန်းယန်" }
+            },
+            {
+                "value": "BAMANA",
+                "code_mm": "ဗမန",
+                "label": { "en": "Bhamo", "mm": "ဗန်းမော်" }
+            },
+            {
+                "value": "KHAPHANA",
+                "code_mm": "ခဖန",
+                "label": { "en": "Chipwi", "mm": "ချီဖွေ" }
+            },
+            {
+                "value": "DAHPAYA",
+                "code_mm": "ဒဖယ",
+                "label": { "en": "Dawphonyan", "mm": "ဒေါ့ဖုန်းယန်" }
+            },
+            {
+                "value": "HAPANA",
+                "code_mm": "ဟပန",
+                "label": { "en": "Hopin", "mm": "ဟိုပင်" }
+            },
+            {
+                "value": "KAMANA",
+                "code_mm": "ကမန",
+                "label": { "en": "Kami", "mm": "ကာမီ" }
+            },
+            {
+                "value": "KHALAPHA",
+                "code_mm": "ခလဖ",
+                "label": { "en": "Khaunglanhpu", "mm": "ခေါင်လန်ဖူး" }
+            },
+            {
+                "value": "LAGANA",
+                "code_mm": "လဂန",
+                "label": { "en": "Loija", "mm": "လွယ်ဂျယ်" }
+            },
+            {
+                "value": "MAKHABA",
+                "code_mm": "မခဘ",
+                "label": { "en": "Machanbaw", "mm": "မချမ်းဘော" }
+            },
+            {
+                "value": "MASANA",
+                "code_mm": "မစန",
+                "label": { "en": "Mansi", "mm": "မံစီ" }
+            },
+            {
+                "value": "MANYANA",
+                "code_mm": "မညန",
+                "label": { "en": "Mohnyin", "mm": "မိုးညင်း" }
+            },
+            {
+                "value": "MAKATA",
+                "code_mm": "မကတ",
+                "label": { "en": "Mokaung", "mm": "မိုးကောင်း" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Momaik", "mm": "မိုးမောက်" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မကန",
+                "label": { "en": "Myitkyina", "mm": "မြစ်ကြီးနား" }
+            },
+            {
+                "value": "NAMANA",
+                "code_mm": "နမန",
+                "label": { "en": "Naungmun", "mm": "နောင်မွန်း" }
+            },
+            {
+                "value": "HPAKANA",
+                "code_mm": "ဖကန",
+                "label": { "en": "Phakant", "mm": "ဖားကန့်" }
+            },
+            {
+                "value": "PATAAH",
+                "code_mm": "ပတအ",
+                "label": { "en": "Putao", "mm": "ပူတာအို" }
+            },
+            {
+                "value": "YAKANA",
+                "code_mm": "ရကန",
+                "label": { "en": "Shweku", "mm": " ွှေကူ" }
+            },
+            {
+                "value": "SABANA",
+                "code_mm": "ဆဘန",
+                "label": { "en": "Sinbo", "mm": "ဆင်ဘို" }
+            },
+            {
+                "value": "SALANA",
+                "code_mm": "ဆလန",
+                "label": { "en": "Sawla", "mm": "ဆော့လော" }
+            },
+            {
+                "value": "SAPAYA",
+                "code_mm": "ဆပရ",
+                "label": { "en": "Sumprabum", "mm": "ဆွမ်ပရာဘွမ်" }
+            },
+            {
+                "value": "TANANA",
+                "code_mm": "တနန",
+                "label": { "en": "Tanai", "mm": "တနိုင်း" }
+            },
+            {
+                "value": "WAMANA",
+                "code_mm": "ဝမန",
+                "label": { "en": "Wingmaw", "mm": "ဝင်းမော်" }
+            }
+        ]
+    },
+    {
+        "value": "2",
+        "label": {
+            "en": "Kayah",
+            "mm": "ကယားပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "BALAKHA",
+                "code_mm": "ဘလခ",
+                "label": { "en": "Balkhake", "mm": "ဘော်လခဲ" }
+            },
+            {
+                "value": "DAMASA",
+                "code_mm": "ဒမဆ",
+                "label": { "en": "Demoso", "mm": "ဒီမောဆိုး" }
+            },
+            {
+                "value": "LAKANA",
+                "code_mm": "လကန",
+                "label": { "en": "Loikaw", "mm": "လွိုင်ကော်" }
+            },
+            {
+                "value": "MASANA",
+                "code_mm": "မဆန",
+                "label": { "en": "Mese", "mm": "မယ်ဆည်နန်" }
+            },
+            {
+                "value": "HPASANA",
+                "code_mm": "ဖဆန",
+                "label": { "en": "Phasung", "mm": "ဖားဆောင်း" }
+            },
+            {
+                "value": "PHAYASA",
+                "code_mm": "ဖရဆ",
+                "label": { "en": "Pruso", "mm": "ဖရူးဆိုး" }
+            },
+            {
+                "value": "YATANA",
+                "code_mm": "ရတန",
+                "label": { "en": "Shadaw", "mm": "ရှားတော်" }
+            }
+        ]
+    },
+    {
+        "value": "3",
+        "label": {
+            "en": "Kayin",
+            "mm": "ကရင်ပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "LABANA",
+                "code_mm": "လဘန",
+                "label": { "en": "Hlaingbwe", "mm": "လှိုင်းဘွဲ့" }
+            },
+            {
+                "value": "KAKAYA",
+                "code_mm": "ကကရ",
+                "label": { "en": "Kokareit", "mm": "ကော့ကရိတ်" }
+            },
+            {
+                "value": "KASAKA",
+                "code_mm": "ကဆက",
+                "label": { "en": "Kyaikseikgyi", "mm": "ကြာအင်းဆိပ်ကြီး" }
+            },
+            {
+                "value": "KADANA",
+                "code_mm": "ကဒန",
+                "label": { "en": "Kyone Doe", "mm": "ကျုံဒိုး" }
+            },
+            {
+                "value": "MAWATA",
+                "code_mm": "မဝတ",
+                "label": { "en": "Myawaddy", "mm": "မြဝတီ" }
+            },
+            {
+                "value": "PHAAHNA",
+                "code_mm": "ဖအန",
+                "label": { "en": "Hpaan", "mm": "ဖားအံ" }
+            }
+        ]
+    },
+    {
+        "value": "4",
+        "label": {
+            "en": "Chin",
+            "mm": "ချင်းပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "HAKHANA",
+                "code_mm": "ဟခန",
+                "label": { "en": "Hakha", "mm": "ဟားခါး" }
+            },
+            {
+                "value": "HATALA",
+                "code_mm": "ထတလ",
+                "label": { "en": "Hantalan", "mm": "ထန်တလန်" }
+            },
+            {
+                "value": "KAPALA",
+                "code_mm": "ကပလ",
+                "label": { "en": "Kanpetlet", "mm": "ကန်ပက်လက်" }
+            },
+            {
+                "value": "MATAPA",
+                "code_mm": "မတပ",
+                "label": { "en": "Matupi", "mm": "မတူပီ" }
+            },
+            {
+                "value": "MATANA",
+                "code_mm": "မတန",
+                "label": { "en": "Minta", "mm": "မင်းတပ်" }
+            },
+            {
+                "value": "HPALANA",
+                "code_mm": "ဖလန",
+                "label": { "en": "Phalam", "mm": "ဖလမ်း" }
+            },
+            {
+                "value": "PALAWA",
+                "code_mm": "ပလဝ",
+                "label": { "en": "Paletwa", "mm": "ပလက်ဝ" }
+            },
+            {
+                "value": "TATANA",
+                "code_mm": "တတန",
+                "label": { "en": "Tedim", "mm": "တီးတိန်" }
+            },
+            {
+                "value": "TAZANA",
+                "code_mm": "တဇန",
+                "label": { "en": "Tonzang", "mm": "တွန်းဇံ" }
+            }
+        ]
+    },
+    {
+        "value": "5",
+        "label": {
+            "en": "Sagaing",
+            "mm": "စစ်ကိုင်းတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "AHYATA",
+                "code_mm": "အရတ",
+                "label": { "en": "Ayadar", "mm": "အရာတော်" }
+            },
+            {
+                "value": "BAMANA",
+                "code_mm": "ဗမန",
+                "label": { "en": "Banmauk", "mm": "ဗန်းမောက်" }
+            },
+            {
+                "value": "BATALA",
+                "code_mm": "ဘတလ",
+                "label": { "en": "Buhtalin", "mm": "ဘုတလင်" }
+            },
+            {
+                "value": "KHAOUNA",
+                "code_mm": "ခဥန",
+                "label": { "en": "Chaung Oo", "mm": "ချောင်းဦး" }
+            },
+            {
+                "value": "DAPAYA",
+                "code_mm": "ဒပယ",
+                "label": { "en": "Dipayin", "mm": "ဒီပဲယင်း" }
+            },
+            {
+                "value": "HAMALA",
+                "code_mm": "ဟမလ",
+                "label": { "en": "Homalin", "mm": "ဟုမ္မလင်း" }
+            },
+            {
+                "value": "HTAKHANA",
+                "code_mm": "ထခန",
+                "label": { "en": "Htikyain", "mm": "ထီးချိုင့်" }
+            },
+            {
+                "value": "AHTANA",
+                "code_mm": "အတန",
+                "label": { "en": "Indaw", "mm": "အင်းတော်" }
+            },
+            {
+                "value": "KANANA",
+                "code_mm": "ကနန",
+                "label": { "en": "Kani", "mm": "ကနီ" }
+            },
+            {
+                "value": "KATHANA",
+                "code_mm": "ကသန",
+                "label": { "en": "Katha", "mm": "ကသာ" }
+            },
+            {
+                "value": "KALAHTA",
+                "code_mm": "ကလထ",
+                "label": { "en": "Kale", "mm": "ကလေး" }
+            },
+            {
+                "value": "KALAWA",
+                "code_mm": "ကလဝ",
+                "label": { "en": "Kalewa", "mm": "ကလေးဝ" }
+            },
+            {
+                "value": "KAPHANA",
+                "code_mm": "ကဘန",
+                "label": { "en": "Kanblu", "mm": "ကန့်ဘလူ" }
+            },
+            {
+                "value": "KALATA",
+                "code_mm": "ကလတ",
+                "label": { "en": "Kawlin", "mm": "ကောလင်း" }
+            },
+            {
+                "value": "KHATANA",
+                "code_mm": "ခတန",
+                "label": { "en": "Khanti", "mm": "ခန္တီး" }
+            },
+            {
+                "value": "KHAOUTA",
+                "code_mm": "ခဥတ",
+                "label": { "en": "Khin Oo", "mm": "ခင်ဦး" }
+            },
+            {
+                "value": "KALANA",
+                "code_mm": "ကလန",
+                "label": { "en": "Kyun Hla", "mm": "ကျွန်းလှ" }
+            },
+            {
+                "value": "MALANA",
+                "code_mm": "မလန",
+                "label": { "en": "Mawlik", "mm": "မော်လိုက်" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မကန",
+                "label": { "en": "Mingin", "mm": "မင်းကင်း" }
+            },
+            {
+                "value": "MAYANA",
+                "code_mm": "မရန",
+                "label": { "en": "Monywa", "mm": "မုံရွာ" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Myaung", "mm": "မြောင်" }
+            },
+            {
+                "value": "NAYANA",
+                "code_mm": "နယန",
+                "label": { "en": "Naungyun", "mm": "နန်းယွန်း" }
+            },
+            {
+                "value": "PALANA",
+                "code_mm": "ပလန",
+                "label": { "en": "Palaing", "mm": "ပုလဲ" }
+            },
+            {
+                "value": "HPAPANA",
+                "code_mm": "ဖပန",
+                "label": { "en": "Phaung Pyin", "mm": "ဖောင်ပျင်း" }
+            },
+            {
+                "value": "PALAPHA",
+                "code_mm": "ပလဘ",
+                "label": { "en": "Pinlebu", "mm": "ပင်လယ်ဘူး" }
+            },
+            {
+                "value": "SAKANA",
+                "code_mm": "စကန",
+                "label": { "en": "Sagaing", "mm": "စစ်ကိုင်း" }
+            },
+            {
+                "value": "SALAKA",
+                "code_mm": "ဆလက",
+                "label": { "en": "Salingyi", "mm": "ဆားလင်းကြီး" }
+            },
+            {
+                "value": "YAPHANA",
+                "code_mm": "ရဘန",
+                "label": { "en": "Shwebo", "mm": "ရွှေဘို" }
+            },
+            {
+                "value": "TAMANA",
+                "code_mm": "တမန",
+                "label": { "en": "Tamu", "mm": "တမူး" }
+            },
+            {
+                "value": "TASANA",
+                "code_mm": "တဆန",
+                "label": { "en": "Tan Se", "mm": "တန့်ဆည်" }
+            },
+            {
+                "value": "WALANA",
+                "code_mm": "ဝလန",
+                "label": { "en": "Wetlet", "mm": "ဝက်လက်" }
+            },
+            {
+                "value": "YAOUNA",
+                "code_mm": "ရဥန",
+                "label": { "en": "Ye Oo", "mm": "ရေဦး" }
+            },
+            {
+                "value": "YAMAPA",
+                "code_mm": "ယမပ",
+                "label": { "en": "Yinmarpin", "mm": "ယင်းမာပင်" }
+            }
+        ]
+    },
+    {
+        "value": "6",
+        "label": {
+            "en": "Tanintharyi",
+            "mm": "တနင်္သာရီတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "BAPANA",
+                "code_mm": "ဘပန",
+                "label": { "en": "Buthtpyin", "mm": "ဘုတ်ပြင်း" }
+            },
+            {
+                "value": "HTAWANA",
+                "code_mm": "ထဝန",
+                "label": { "en": "Dawei", "mm": "ထားဝယ်" }
+            },
+            {
+                "value": "KATHANA",
+                "code_mm": "ကသန",
+                "label": { "en": "Kawthaung", "mm": "ကော့သောင်း" }
+            },
+            {
+                "value": "KASANA",
+                "code_mm": "ကစန",
+                "label": { "en": "Kyunsu", "mm": "ကျွန်းစု" }
+            },
+            {
+                "value": "LALANA",
+                "code_mm": "လလန",
+                "label": { "en": "Launglon", "mm": "လောင်းလုံ" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Myeik", "mm": "မြိတ်" }
+            },
+            {
+                "value": "PALANA",
+                "code_mm": "ပလန",
+                "label": { "en": "Palaw", "mm": "ပုလော" }
+            },
+            {
+                "value": "TANATA",
+                "code_mm": "တနသ",
+                "label": { "en": "Tanintharyi", "mm": "တနင်္သာရီ" }
+            },
+            {
+                "value": "YAPHANA",
+                "code_mm": "ရဖန",
+                "label": { "en": "Yephu", "mm": "ရေဖြူ" }
+            }
+        ]
+    },
+    {
+        "value": "7",
+        "label": {
+            "en": "Bago",
+            "mm": "ပဲခူးတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "AHPHANA",
+                "code_mm": "အဖန",
+                "label": { "en": "Okpho", "mm": "အုတ်ဖို" }
+            },
+            {
+                "value": "DAOUNA",
+                "code_mm": "ဒဥန",
+                "label": { "en": "Daik Oo", "mm": "ဒိုက်ဦး" }
+            },
+            {
+                "value": "HATAPA",
+                "code_mm": "ထတပ",
+                "label": { "en": "Hantapin", "mm": "ထန်းတပင်" }
+            },
+            {
+                "value": "KAKANA",
+                "code_mm": "ကကန",
+                "label": { "en": "Kyaukgyi", "mm": "ကျောက်ကြီး" }
+            },
+            {
+                "value": "KATAKA",
+                "code_mm": "ကတခ",
+                "label": { "en": "Kyauktaga", "mm": "ကျောက်တံခါး" }
+            },
+            {
+                "value": "MADANA",
+                "code_mm": "မဒန",
+                "label": { "en": "Madauke", "mm": "မဒေါက်" }
+            },
+            {
+                "value": "MALANA",
+                "code_mm": "မလန",
+                "label": { "en": "Min Hla", "mm": "မင်းလှ" }
+            },
+            {
+                "value": "MANYANA",
+                "code_mm": "မညန",
+                "label": { "en": "Moe Nyo", "mm": "မိုးညို" }
+            },
+            {
+                "value": "NATALA",
+                "code_mm": "နတလ",
+                "label": { "en": "Nattalin", "mm": "နတ်တလင်း" }
+            },
+            {
+                "value": "NYALAPA",
+                "code_mm": "ညလပ",
+                "label": { "en": "Nyaunglebin", "mm": "ညောင်လေးပင်" }
+            },
+            {
+                "value": "PAKHANA",
+                "code_mm": "ပခန",
+                "label": { "en": "Bago", "mm": "ပဲခူး" }
+            },
+            {
+                "value": "PAKHANA",
+                "code_mm": "ပခန",
+                "label": { "en": "Paukkaung", "mm": "ပေါက်ခေါင်း" }
+            },
+            {
+                "value": "PATATA",
+                "code_mm": "ပတတ",
+                "label": { "en": "Paungtwe", "mm": "ပေါင်းတည်" }
+            },
+            {
+                "value": "PAMANA",
+                "code_mm": "ပမန",
+                "label": { "en": "Pyay", "mm": "ပြည်" }
+            },
+            {
+                "value": "YAKANA",
+                "code_mm": "ရကန",
+                "label": { "en": "Shwegyin", "mm": "ရွှေကျင်" }
+            },
+            {
+                "value": "YATANA",
+                "code_mm": "ရတန",
+                "label": { "en": "Shwetaung", "mm": "ရွှေတောင်" }
+            },
+            {
+                "value": "TANGANA",
+                "code_mm": "တငန",
+                "label": { "en": "Taungngwe", "mm": "တောင်ငူ" }
+            },
+            {
+                "value": "THANAPA",
+                "code_mm": "သနပ",
+                "label": { "en": "Thanapin", "mm": "သနပ်ပင်" }
+            },
+            {
+                "value": "THAWATA",
+                "code_mm": "သဝတ",
+                "label": { "en": "Thayawady", "mm": "သာယာဝတီ" }
+            },
+            {
+                "value": "THASANA",
+                "code_mm": "သဆန",
+                "label": { "en": "Thonze", "mm": "သုံးဆယ်" }
+            },
+            {
+                "value": "WAMANA",
+                "code_mm": "ဝမန",
+                "label": { "en": "Waw", "mm": "ဝေါ" }
+            },
+            {
+                "value": "YATAYA",
+                "code_mm": "ရတရ",
+                "label": { "en": "Yedashe", "mm": "ရေတာရှည်" }
+            },
+            {
+                "value": "ZAKANA",
+                "code_mm": "ဇကန",
+                "label": { "en": "Zeegone", "mm": "ဇီးကုန်း" }
+            }
+        ]
+    },
+    {
+        "value": "8",
+        "label": {
+            "en": "Magway",
+            "mm": "မကွေးတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "AHLANA",
+                "code_mm": "အလန",
+                "label": { "en": "Aunglan", "mm": "အောင်လံ" }
+            },
+            {
+                "value": "KHAMANA",
+                "code_mm": "ခမန",
+                "label": { "en": "Chauke", "mm": "ချောက်" }
+            },
+            {
+                "value": "GAGANA",
+                "code_mm": "ဂဂန",
+                "label": { "en": "Gant Gaw", "mm": "ဂန့်ဂေါ" }
+            },
+            {
+                "value": "SAHPANA",
+                "code_mm": "ဆဖန",
+                "label": { "en": "Seikhpyu", "mm": "ဆိပ်ဖြူ" }
+            },
+            {
+                "value": "SAPAWA",
+                "code_mm": "ဆပဝ",
+                "label": { "en": "Sinpaungwe", "mm": "ဆင်ပေါင်ဝဲ" }
+            },
+            {
+                "value": "HTALANA",
+                "code_mm": "ထလန",
+                "label": { "en": "Htilin", "mm": "ထီးလင်း" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မကန",
+                "label": { "en": "Magway", "mm": "မကွေး" }
+            },
+            {
+                "value": "MABANA",
+                "code_mm": "မဘန",
+                "label": { "en": "Minbu", "mm": "မင်းဘူး" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Myaing", "mm": "မြိုင်" }
+            },
+            {
+                "value": "MAHTANA",
+                "code_mm": "မထန",
+                "label": { "en": "Myedae", "mm": "မြေထဲ" }
+            },
+            {
+                "value": "MATANA",
+                "code_mm": "မသန",
+                "label": { "en": "Myothit", "mm": "မြို့သစ်" }
+            },
+            {
+                "value": "NAMANA",
+                "code_mm": "နမန",
+                "label": { "en": "Natmauk", "mm": "နတ်မောက်" }
+            },
+            {
+                "value": "PAKHAKA",
+                "code_mm": "ပခက",
+                "label": { "en": "Pakokku", "mm": "ပခုက္ကူ" }
+            },
+            {
+                "value": "PAHPANA",
+                "code_mm": "ပဖန",
+                "label": { "en": "Phaung Phyu", "mm": "ပွင့်ဖြူ" }
+            },
+            {
+                "value": "SALANA",
+                "code_mm": "စလန",
+                "label": { "en": "Salin", "mm": "စလင်း" }
+            },
+            {
+                "value": "SAKANA",
+                "code_mm": "စကန",
+                "label": { "en": "Saku", "mm": "စကု" }
+            },
+            {
+                "value": "TATAKA",
+                "code_mm": "တတက",
+                "label": { "en": "Taungdwingyi", "mm": "တောင်တွင်းကြီး" }
+            },
+            {
+                "value": "TAYANA",
+                "code_mm": "သရန",
+                "label": { "en": "Thayet", "mm": "သရက်" }
+            },
+            {
+                "value": "SAMANA",
+                "code_mm": "ဆမန",
+                "label": { "en": "Saw", "mm": "ဆော" }
+            },
+            {
+                "value": "YANAKHA",
+                "code_mm": "ရနခ",
+                "label": { "en": "Yenangchaung", "mm": "ရေနံချောင်း" }
+            }
+        ]
+    },
+    {
+        "value": "9",
+        "label": {
+            "en": "Mandalay",
+            "mm": "မန္တလေးတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "DAKATA",
+                "code_mm": "ဒခသ",
+                "label": { "en": "Dekkhinathiri", "mm": "ဒက္ခိဏသီရိ" }
+            },
+            {
+                "value": "LAWANA",
+                "code_mm": "လဝန",
+                "label": { "en": "Leywey", "mm": "လယ်ဝေး" }
+            },
+            {
+                "value": "OUTATHA",
+                "code_mm": "ဥတသ",
+                "label": { "en": "Uttarathiri", "mm": "ဥတ္တရသီရိ" }
+            },
+            {
+                "value": "PABATHA",
+                "code_mm": "ပဗသ",
+                "label": { "en": "Pobbathiri", "mm": "ပုဗ္ဗသီရိ" }
+            },
+            {
+                "value": "PAMANA",
+                "code_mm": "ပမန",
+                "label": { "en": "Pyinmana", "mm": "ပျဉ်းမနား" }
+            },
+            {
+                "value": "TAKANA",
+                "code_mm": "တကန",
+                "label": { "en": "Tatkone", "mm": "တပ်ကုန်း" }
+            },
+            {
+                "value": "ZABATHA",
+                "code_mm": "ဇဗသ",
+                "label": { "en": "Zabuthiri", "mm": "ဇမ္ဗူသီရိ" }
+            },
+            {
+                "value": "ZAYATHA",
+                "code_mm": "ဇယသ",
+                "label": { "en": "Zeyathiri", "mm": "ဇေယျာသီရိ" }
+            },
+            {
+                "value": "AHMAYA",
+                "code_mm": "အမရ",
+                "label": { "en": "Amarapura", "mm": "အမရပူရ" }
+            },
+            {
+                "value": "AHMAZA",
+                "code_mm": "အမဇ",
+                "label": { "en": "Aungmyaythazan", "mm": "အောင်မြေသာဇံ" }
+            },
+            {
+                "value": "KHAAHZA",
+                "code_mm": "ခအစ",
+                "label": { "en": "Chanayethazan", "mm": "ချမ်းအေးသာစည်" }
+            },
+            {
+                "value": "KHAMAZA",
+                "code_mm": "ခမစ",
+                "label": { "en": "Chanmyathazi", "mm": "ချမ်းမြသာစည်" }
+            },
+            {
+                "value": "KAPHATA",
+                "code_mm": "ကပတ",
+                "label": { "en": "Kyaukpadaung", "mm": "ကျောက်ပန်းတောင်း" }
+            },
+            {
+                "value": "KASANA",
+                "code_mm": "ကဆန",
+                "label": { "en": "Kyaukse", "mm": "ကျောက်ဆည်" }
+            },
+            {
+                "value": "MAHAMA",
+                "code_mm": "မဟမ",
+                "label": { "en": "Maha Aungmyay", "mm": "မဟာအောင်မြေ" }
+            },
+            {
+                "value": "MATAYA",
+                "code_mm": "မတရ",
+                "label": { "en": "Mattara", "mm": "မတ္တရာ" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Pyinoolwin", "mm": "မေမြို့" }
+            },
+            {
+                "value": "MAHTALA",
+                "code_mm": "မထလ",
+                "label": { "en": "Meiktila", "mm": "မိတ္ထီလာ" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မကန",
+                "label": { "en": "Mogok", "mm": "မိုးကုတ်" }
+            },
+            {
+                "value": "MAKHANA",
+                "code_mm": "မခန",
+                "label": { "en": "Myingyan", "mm": "မြင်းခြံ" }
+            },
+            {
+                "value": "NGATHAYA",
+                "code_mm": "ငသရ",
+                "label": { "en": "Ngathayok", "mm": "ငါးသရောက်" }
+            },
+            {
+                "value": "NYAOUNA",
+                "code_mm": "ညဥန",
+                "label": { "en": "Nyaungoo", "mm": "ညောင်ဦး" }
+            },
+            {
+                "value": "PAMANA",
+                "code_mm": "ပမန",
+                "label": { "en": "Pyinmana", "mm": "ပျဉ်းမနား" }
+            },
+            {
+                "value": "SAKATA",
+                "code_mm": "စကတ",
+                "label": { "en": "Sindae", "mm": "စဉ့်ကိုင်" }
+            },
+            {
+                "value": "SAKANA",
+                "code_mm": "ဆကန",
+                "label": { "en": "Sindaekyay", "mm": "စဉ့်ကူး" }
+            },
+            {
+                "value": "TAKANA",
+                "code_mm": "တကန",
+                "label": { "en": "Takone", "mm": "တကောင်း" }
+            },
+            {
+                "value": "THAPAKA",
+                "code_mm": "သပက",
+                "label": { "en": "Thabeikkyin", "mm": "သပိတ်ကျင်း" }
+            },
+            {
+                "value": "WATANA",
+                "code_mm": "ဝတန",
+                "label": { "en": "Wundwin", "mm": "ဝမ်းတွင်း" }
+            },
+            {
+                "value": "YAMATHA",
+                "code_mm": "ရမသ",
+                "label": { "en": "Yamethin", "mm": "ရမည်းသင်း" }
+            }
+        ]
+    },
+    {
+        "value": "10",
+        "label": {
+            "en": "Mon",
+            "mm": "မွန်ပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "BALANA",
+                "code_mm": "ဘလန",
+                "label": { "en": "Bilin", "mm": "ဘီးလင်း" }
+            },
+            {
+                "value": "KHASANA",
+                "code_mm": "ခဆန",
+                "label": { "en": "Chaungzon", "mm": "ချောင်းဆုံ" }
+            },
+            {
+                "value": "KAMAYA",
+                "code_mm": "ကမရ",
+                "label": { "en": "Kyaikmaraw", "mm": "ကျိုက်မရော" }
+            },
+            {
+                "value": "KAHTANA",
+                "code_mm": "ကထန",
+                "label": { "en": "Kyaikto", "mm": "ကျိုက်ထို" }
+            },
+            {
+                "value": "MALAMA",
+                "code_mm": "မလမ",
+                "label": { "en": "Mawlamyine", "mm": "မော်လမြိုင်" }
+            },
+            {
+                "value": "MADANA",
+                "code_mm": "မဒန",
+                "label": { "en": "Mudon", "mm": "မုဒုံ" }
+            },
+            {
+                "value": "PAMANA",
+                "code_mm": "ပမန",
+                "label": { "en": "Paung", "mm": "ပေါင်" }
+            },
+            {
+                "value": "THAHPAYA",
+                "code_mm": "သဖရ",
+                "label": { "en": "Thanbyuzayat", "mm": "သံဖြူဇရပ်" }
+            },
+            {
+                "value": "THAHTANA",
+                "code_mm": "သထန",
+                "label": { "en": "Thaton", "mm": "သထုံ" }
+            },
+            {
+                "value": "YAMANA",
+                "code_mm": "ရမန",
+                "label": { "en": "Ye", "mm": "ရေး" }
+            }
+        ]
+    },
+    {
+        "value": "11",
+        "label": {
+            "en": "Rakhine",
+            "mm": "ရခိုင်ပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "AHMANA",
+                "code_mm": "အမန",
+                "label": { "en": "Ann", "mm": "အမ်း" }
+            },
+            {
+                "value": "BATHATA",
+                "code_mm": "ဘသတ",
+                "label": { "en": "Buhthidaung", "mm": "ဘူးသီးတောင်" }
+            },
+            {
+                "value": "GAMANA",
+                "code_mm": "ဂမန",
+                "label": { "en": "Gwa", "mm": "ဂွ" }
+            },
+            {
+                "value": "KAHPANA",
+                "code_mm": "ကဖန",
+                "label": { "en": "Kyakhpyu", "mm": "ကျောက်ဖြူ" }
+            },
+            {
+                "value": "KATANA",
+                "code_mm": "ကတန",
+                "label": { "en": "Kyauktaw", "mm": "ကျောက်တော်" }
+            },
+            {
+                "value": "MAAHNA",
+                "code_mm": "မအန",
+                "label": { "en": "Manaung", "mm": "မာန်အောင်" }
+            },
+            {
+                "value": "MATANA",
+                "code_mm": "မတန",
+                "label": { "en": "Maungdaw", "mm": "မောင်းတော" }
+            },
+            {
+                "value": "MAPANA",
+                "code_mm": "မပန",
+                "label": { "en": "Minbya", "mm": "မင်းပြား" }
+            },
+            {
+                "value": "MAOUNA",
+                "code_mm": "မဥန",
+                "label": { "en": "Myauk U", "mm": "မြောက်ဦး" }
+            },
+            {
+                "value": "PATANA",
+                "code_mm": "ပတန",
+                "label": { "en": "Pauktaw", "mm": "ပေါက်တော" }
+            },
+            {
+                "value": "PANATA",
+                "code_mm": "ပဏက",
+                "label": { "en": "Ponnagyun", "mm": "ပုဏ္ဏားကျွန်း" }
+            },
+            {
+                "value": "SATANA",
+                "code_mm": "စတန",
+                "label": { "en": "Sittwe", "mm": "စစ်တွေ" }
+            },
+            {
+                "value": "THATANA",
+                "code_mm": "သတန",
+                "label": { "en": "Thandwe", "mm": "သံတွဲ" }
+            },
+            {
+                "value": "TAKANA",
+                "code_mm": "တကန",
+                "label": { "en": "Taungup", "mm": "တောင်ကုတ်" }
+            },
+            {
+                "value": "YABANA",
+                "code_mm": "ရဗန",
+                "label": { "en": "Ramree", "mm": "ရမ်းဗြဲ" }
+            }
+        ]
+    },
+    {
+        "value": "12",
+        "label": {
+            "en": "Yangon",
+            "mm": "ရန်ကုန်တိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "AHLANA",
+                "code_mm": "အလန",
+                "label": { "en": "Ahlone", "mm": "အလုံ" }
+            },
+            {
+                "value": "BAHANA",
+                "code_mm": "ဗဟန",
+                "label": { "en": "Bahan", "mm": "ဗဟန်း" }
+            },
+            {
+                "value": "BATAHTA",
+                "code_mm": "ဗတထ",
+                "label": { "en": "Botahtaung", "mm": "ဗိုလ်တထောင်" }
+            },
+            {
+                "value": "KAKAKA",
+                "code_mm": "ကကက",
+                "label": { "en": "Coco Island", "mm": "ကိုကိုးကျွန်း" }
+            },
+            {
+                "value": "DAGANA",
+                "code_mm": "ဒဂန",
+                "label": { "en": "Dagon", "mm": "ဒဂုံ" }
+            },
+            {
+                "value": "DAPANA",
+                "code_mm": "ဒပန",
+                "label": { "en": "Daw Pone", "mm": "ဒေါပုံ" }
+            },
+            {
+                "value": "DALANA",
+                "code_mm": "ဒလန",
+                "label": { "en": "Dala", "mm": "ဒလ" }
+            },
+            {
+                "value": "LATHAYA",
+                "code_mm": "လသယ",
+                "label": { "en": "Hlaingthaya", "mm": "လှိုင်သာယာ" }
+            },
+            {
+                "value": "AHSANA",
+                "code_mm": "အစန",
+                "label": { "en": "Insein", "mm": "အင်းစိန်" }
+            },
+            {
+                "value": "KAMAYA",
+                "code_mm": "ကမရ",
+                "label": { "en": "Kamayut", "mm": "ကမာရွတ်" }
+            },
+            {
+                "value": "KATATA",
+                "code_mm": "ကတတ",
+                "label": { "en": "Kyauktada", "mm": "ကျောက်တံတား" }
+            },
+            {
+                "value": "KATANA",
+                "code_mm": "ကတန",
+                "label": { "en": "Kyauktan", "mm": "ကျောက်တန်း" }
+            },
+            {
+                "value": "KAMATA",
+                "code_mm": "ကမတ",
+                "label": { "en": "Kyimyinding", "mm": "ကြည့်မြင်တိုင်" }
+            },
+            {
+                "value": "LAMATA",
+                "code_mm": "လမတ",
+                "label": { "en": "Lanmadaw", "mm": "လမ်းမတော်" }
+            },
+            {
+                "value": "LATHANA",
+                "code_mm": "လသန",
+                "label": { "en": "Latha", "mm": "လသာ" }
+            },
+            {
+                "value": "MAYAKA",
+                "code_mm": "မရက",
+                "label": { "en": "Mayangone", "mm": "မရမ်းကုန်း" }
+            },
+            {
+                "value": "MAGATA",
+                "code_mm": "မဂတ",
+                "label": { "en": "Mingalar Taungnyunt", "mm": "မင်္ဂလာတောင်ညွှန့်" }
+            },
+            {
+                "value": "MAGADA",
+                "code_mm": "မဂဒ",
+                "label": { "en": "Mingalardon", "mm": "မင်္ဂလာဒုံ" }
+            },
+            {
+                "value": "OUKAMA",
+                "code_mm": "ဥကမ",
+                "label": { "en": "North Okkalapa", "mm": "မြောက်ဥက္ကလာပ" }
+            },
+            {
+                "value": "PABATA",
+                "code_mm": "ပဘတ",
+                "label": { "en": "Pabedan", "mm": "ပန်းဘဲတန်း" }
+            },
+            {
+                "value": "PAZATA",
+                "code_mm": "ပဇတ",
+                "label": { "en": "Pazundaung", "mm": "ပုဇွန်တောင်" }
+            },
+            {
+                "value": "SAKHANA",
+                "code_mm": "စခန",
+                "label": { "en": "Sanchaung", "mm": "စမ်းချောင်း" }
+            },
+            {
+                "value": "SAKAKHA",
+                "code_mm": "ဆကခ",
+                "label": { "en": "Seikkyikanaungto", "mm": "ဆိပ်ကြီးခနောင်တို" }
+            },
+            {
+                "value": "YAPATHA",
+                "code_mm": "ရပသ",
+                "label": { "en": "Shwepyitha", "mm": "ရွှေပြည်သာ" }
+            },
+            {
+                "value": "OUKATA",
+                "code_mm": "ဥကတ",
+                "label": { "en": "South Okkalapa", "mm": "တောင်ဥက္ကလာပ" }
+            },
+            {
+                "value": "TAMANA",
+                "code_mm": "တမန",
+                "label": { "en": "Tamwe", "mm": "တာမွေ" }
+            },
+            {
+                "value": "THAKATA",
+                "code_mm": "သကတ",
+                "label": { "en": "Thaketa", "mm": "သာကေတ" }
+            },
+            {
+                "value": "THALNA",
+                "code_mm": "သလန",
+                "label": { "en": "Thanlyin", "mm": "သန်လျင်" }
+            },
+            {
+                "value": "YAKANA",
+                "code_mm": "ရကန",
+                "label": { "en": "Yankin", "mm": "ရန်ကင်း" }
+            }
+        ]
+    },
+    {
+        "value": "13",
+        "label": {
+            "en": "Shan",
+            "mm": "ရှမ်းပြည်နယ်"
+        },
+        "townships": [
+            {
+                "value": "HAPATA",
+                "code_mm": "ဟပတ",
+                "label": { "en": "Hopong", "mm": "ဟိုပန်" }
+            },
+            {
+                "value": "KALANA",
+                "code_mm": "ကလန",
+                "label": { "en": "Kalaw", "mm": "ကလော" }
+            },
+            {
+                "value": "KALATA",
+                "code_mm": "ကလတ",
+                "label": { "en": "Kumlaung", "mm": "ကွမ်းလုံ" }
+            },
+            {
+                "value": "KATANA",
+                "code_mm": "ကတန",
+                "label": { "en": "Kengtung", "mm": "ကျိုင်းတုံ" }
+            },
+            {
+                "value": "KAMANA",
+                "code_mm": "ကမန",
+                "label": { "en": "Kyaukme", "mm": "ကျောက်မဲ" }
+            },
+            {
+                "value": "KAKHANA",
+                "code_mm": "ကခန",
+                "label": { "en": "Kutkhaing", "mm": "ကွတ်ခိုင်" }
+            },
+            {
+                "value": "LAYANA",
+                "code_mm": "လရန",
+                "label": { "en": "Lashio", "mm": "လားရှိုး" }
+            },
+            {
+                "value": "LAKANA",
+                "code_mm": "လကန",
+                "label": { "en": "Laukkaing", "mm": "လောက်ကိုင်" }
+            },
+            {
+                "value": "LAKHANA",
+                "code_mm": "လခန",
+                "label": { "en": "Linghe", "mm": "လင်းခေး" }
+            },
+            {
+                "value": "LALANA",
+                "code_mm": "လလန",
+                "label": { "en": "Loilen", "mm": "လွိုင်လင်" }
+            },
+            {
+                "value": "MABANA",
+                "code_mm": "မဘန",
+                "label": { "en": "Mabin", "mm": "မဘိမ်း" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မကန",
+                "label": { "en": "Maingkaing", "mm": "မိုင်းကိုင်" }
+            },
+            {
+                "value": "MAKANA",
+                "code_mm": "မခန",
+                "label": { "en": "Maingkhat", "mm": "မိုင်းခတ်" }
+            },
+            {
+                "value": "MAPHANA",
+                "code_mm": "မဖန",
+                "label": { "en": "Maingpyat", "mm": "မိုင်းဖြတ်" }
+            },
+            {
+                "value": "MAPATA",
+                "code_mm": "မပတ",
+                "label": { "en": "Maingpyin", "mm": "မိုင်းပြင်း" }
+            },
+            {
+                "value": "MASANA",
+                "code_mm": "မဆန",
+                "label": { "en": "Maingsat", "mm": "မိုင်းဆတ်" }
+            },
+            {
+                "value": "MAYANA",
+                "code_mm": "မရန",
+                "label": { "en": "Maingsyu", "mm": "မိုင်းရှူး" }
+            },
+            {
+                "value": "MAYATA",
+                "code_mm": "မရတ",
+                "label": { "en": "Maingyar", "mm": "မိုင်းရယ်" }
+            },
+            {
+                "value": "MATATA",
+                "code_mm": "မတတ",
+                "label": { "en": "Manton", "mm": "မန်တုန်" }
+            },
+            {
+                "value": "MAMATA",
+                "code_mm": "မမတ",
+                "label": { "en": "Momeik", "mm": "မိုးမိတ်" }
+            },
+            {
+                "value": "MANANA",
+                "code_mm": "မနန",
+                "label": { "en": "Mongnai", "mm": "မိုးနဲ" }
+            },
+            {
+                "value": "MASATA",
+                "code_mm": "မဆတ",
+                "label": { "en": "Muse", "mm": "မူဆယ်" }
+            },
+            {
+                "value": "NAMATA",
+                "code_mm": "နမတ",
+                "label": { "en": "Namt u", "mm": "နမ့်တူ" }
+            },
+            {
+                "value": "NAkHATA",
+                "code_mm": "နခတ",
+                "label": { "en": "Naung Cho", "mm": "နောင်ချို" }
+            },
+            {
+                "value": "NYAYANA",
+                "code_mm": "ညရန",
+                "label": { "en": "Nyaung Shwe", "mm": "ညောင်ရွှေ" }
+            },
+            {
+                "value": "HPAKHANA",
+                "code_mm": "ဖခန",
+                "label": { "en": "Pekon", "mm": "ဖယ်ခုံ" }
+            },
+            {
+                "value": "PATAYA",
+                "code_mm": "ပတရ",
+                "label": { "en": "Pindaya", "mm": "ပင်းတယ" }
+            },
+            {
+                "value": "SASANA",
+                "code_mm": "ဆဆန",
+                "label": { "en": "Hsisaing", "mm": "ဆီဆိုင်" }
+            },
+            {
+                "value": "TAYANA",
+                "code_mm": "တယန",
+                "label": { "en": "Tangyan", "mm": "တန့်ယန်း" }
+            },
+            {
+                "value": "TAKHALA",
+                "code_mm": "တခလ",
+                "label": { "en": "Tachileik", "mm": "တာချီလိတ်" }
+            },
+            {
+                "value": "TAKHANA",
+                "code_mm": "တကန",
+                "label": { "en": "Taunggyi", "mm": "တောင်ကြီး" }
+            },
+            {
+                "value": "THAPANA",
+                "code_mm": "သပန",
+                "label": { "en": "Thibe", "mm": "သီပေါ" }
+            },
+            {
+                "value": "YASANA",
+                "code_mm": "ရစန",
+                "label": { "en": "Yangsang", "mm": "ရပ်စောက်" }
+            },
+            {
+                "value": "HAPANA",
+                "code_mm": "ဟပန",
+                "label": { "en": "Hopan", "mm": "ဟိုပုံး" }
+            }
+        ]
+    },
+    {
+        "value": "14",
+        "label": {
+            "en": "Ayeyarwady",
+            "mm": "ဧရာဝတီတိုင်းဒေသကြီး"
+        },
+        "townships": [
+            {
+                "value": "BAKALA",
+                "code_mm": "ဘကလ",
+                "label": { "en": "Bogale", "mm": "ဘိုကလေး" }
+            },
+            {
+                "value": "DHANAPHA",
+                "code_mm": "ဓနဖ",
+                "label": { "en": "Danubyu", "mm": "ဓနုဖြူ" }
+            },
+            {
+                "value": "DADAYA",
+                "code_mm": "ဒဒရ",
+                "label": { "en": "Dedaye", "mm": "ဒေးဒရဲ" }
+            },
+            {
+                "value": "AHMANA",
+                "code_mm": "အမန",
+                "label": { "en": "Einme", "mm": "အိမ်မဲ" }
+            },
+            {
+                "value": "HATHATA",
+                "code_mm": "ဟသတ",
+                "label": { "en": "Hinthada", "mm": "ဟင်္သာတ" }
+            },
+            {
+                "value": "AHGAPA",
+                "code_mm": "အဂပ",
+                "label": { "en": "Ingabu", "mm": "အင်္ဂပူ" }
+            },
+            {
+                "value": "KANANA",
+                "code_mm": "ခနန",
+                "label": { "en": "Kangaung", "mm": "ခနောင်" }
+            },
+            {
+                "value": "KALANA",
+                "code_mm": "ကလန",
+                "label": { "en": "Kyaiklat", "mm": "ကျိုက်လတ်" }
+            },
+            {
+                "value": "KAKHANA",
+                "code_mm": "ကခန",
+                "label": { "en": "Kyangin", "mm": "ကြံခင်း" }
+            },
+            {
+                "value": "KAKANA",
+                "code_mm": "ကကန",
+                "label": { "en": "Kyaung Gone", "mm": "ကျောင်းကုန်း" }
+            },
+            {
+                "value": "LAPATA",
+                "code_mm": "လပတ",
+                "label": { "en": "Labutta", "mm": "လပွတ္တာ" }
+            },
+            {
+                "value": "LAMANA",
+                "code_mm": "လမန",
+                "label": { "en": "Lemyethna", "mm": "လေးမျက်နှာ" }
+            },
+            {
+                "value": "MAAHPA",
+                "code_mm": "မအပ",
+                "label": { "en": "Maubin", "mm": "မအူပင်" }
+            },
+            {
+                "value": "MAMAKA",
+                "code_mm": "မမက",
+                "label": { "en": "Mawlamyinekyun", "mm": "မော်လမြိုင်ကျွန်း" }
+            },
+            {
+                "value": "MAAHNA",
+                "code_mm": "မအန",
+                "label": { "en": "Myanaung", "mm": "မြန်အောင်" }
+            },
+            {
+                "value": "MAMANA",
+                "code_mm": "မမန",
+                "label": { "en": "Myaungmya", "mm": "မြောင်းမြ" }
+            },
+            {
+                "value": "NGAPATA",
+                "code_mm": "ငပတ",
+                "label": { "en": "Ngaputaw", "mm": "ငပုတော" }
+            },
+            {
+                "value": "NYATANA",
+                "code_mm": "ညတန",
+                "label": { "en": "Nyaungdon", "mm": "ညောင်တုန်း" }
+            },
+            {
+                "value": "PATANA",
+                "code_mm": "ပတန",
+                "label": { "en": "Pantanaw", "mm": "ပန်းတနော်" }
+            },
+            {
+                "value": "HPAPANA",
+                "code_mm": "ဖပန",
+                "label": { "en": "Phapon", "mm": "ဖျာပုံ" }
+            },
+            {
+                "value": "THAPANA",
+                "code_mm": "သပန",
+                "label": { "en": "Thabaung", "mm": "သာပေါင်း" }
+            },
+            {
+                "value": "WAKHAMA",
+                "code_mm": "ဝခမ",
+                "label": { "en": "Wakhema", "mm": "ဝါးခယ်မ" }
+            },
+            {
+                "value": "YAKANA",
+                "code_mm": "ရကန",
+                "label": { "en": "Yekyi", "mm": "ရေကြည်" }
+            },
+            {
+                "value": "ZALANA",
+                "code_mm": "ဇလန",
+                "label": { "en": "Zalun", "mm": "ဇလွန်" }
+            }
+        ]
+    }
+]

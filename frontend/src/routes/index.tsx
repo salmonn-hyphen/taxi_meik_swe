@@ -3,6 +3,7 @@ import { PublicLayout } from '@/layouts/PublicLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { ProtectedRoute } from './ProtectedRoute'
+import { GuestRoute } from './GuestRoute'
 import { UserRole } from '@/types'
 
 // Public pages
@@ -12,7 +13,7 @@ import { ContactPage } from '@/features/public/ContactPage'
 import { FAQPage } from '@/features/public/FAQPage'
 import { TermsPage } from '@/features/public/TermsPage'
 import { PrivacyPage } from '@/features/public/PrivacyPage'
-import { BrowseCarsPage } from '@/features/public/BrowseCarsPage'
+// import { BrowseCarsPage } from '@/features/public/BrowseCarsPage'
 import { CarDetailsPage } from '@/features/public/CarDetailsPage'
 
 // Auth pages
@@ -64,13 +65,13 @@ export const router = createBrowserRouter([
     path: '/',
     element: <PublicLayout />,
     children: [
-      { index: true, element: <LandingPage /> },
+      { index: true, element: <GuestRoute><LandingPage /></GuestRoute> },
       { path: 'about', element: <AboutPage /> },
       { path: 'contact', element: <ContactPage /> },
       { path: 'faq', element: <FAQPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'privacy', element: <PrivacyPage /> },
-      { path: 'cars', element: <BrowseCarsPage /> },
+      // { path: 'cars', element: <BrowseCarsPage /> },
       { path: 'cars/:id', element: <CarDetailsPage /> },
     ],
   },
@@ -79,10 +80,10 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
-      { path: 'forgot-password', element: <ForgotPasswordPage /> },
-      { path: 'reset-password/:token', element: <ResetPasswordPage /> },
+      { path: 'login', element: <GuestRoute><LoginPage /></GuestRoute> },
+      { path: 'register', element: <GuestRoute><RegisterPage /></GuestRoute> },
+      { path: 'forgot-password', element: <GuestRoute><ForgotPasswordPage /></GuestRoute> },
+      { path: 'reset-password/:token', element: <GuestRoute><ResetPasswordPage /></GuestRoute> },
     ],
   },
 

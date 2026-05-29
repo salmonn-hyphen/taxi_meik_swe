@@ -53,13 +53,13 @@ export function FAQPage() {
           <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <button
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              className="w-full flex items-center justify-between p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors text-left"
+              className="w-full flex items-center bg-muted/20 justify-between p-4 rounded-xl hover:bg-muted/30 transition-colors text-left"
             >
               <span className="font-medium text-sm">{faq.q}</span>
               <ChevronDown className={cn('w-4 h-4 shrink-0 transition-transform ml-2', openIndex === i && 'rotate-180')} />
             </button>
             {openIndex === i && (
-              <div className="px-4 py-3 text-sm text-muted-foreground border-x border-b rounded-b-xl bg-muted/30">
+              <div className="px-4 py-3 text-sm text-white rounded-b-xl bg-muted/10">
                 {faq.a}
               </div>
             )}

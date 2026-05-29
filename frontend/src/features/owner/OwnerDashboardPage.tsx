@@ -199,7 +199,7 @@ export function OwnerDashboardPage() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-sm">Recent Bookings</h2>
               <Link to="/owner/bookings">
-                <Button size="sm" variant="ghost" className="text-xs gap-1">
+                <Button size="sm" variant="ghost" className="text gap-1">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
               </Link>
@@ -276,9 +276,9 @@ export function OwnerDashboardPage() {
             <h2 className="font-semibold text-sm mb-4">Monthly Earnings</h2>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
               {stats.monthly_earnings.map((m) => (
-                <div key={m.month} className="text-center p-2 rounded-lg bg-muted/50">
+                <div key={m.month} className="text-center p-2 rounded-lg bg-white">
                   <p className="text-xs text-muted-foreground">{m.month}</p>
-                  <p className="text-sm font-bold text-emerald-600">{formatCurrency(m.amount)}</p>
+                  <p className="text-sm font-semibold text-emerald-600">{formatCurrency(m.amount)}</p>
                 </div>
               ))}
             </div>

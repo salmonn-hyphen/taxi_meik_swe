@@ -5,17 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import {
   Car,
-  CalendarDays,
   Eye,
   EyeOff,
   Hash,
-  IdCard,
   Mail,
   MapPin,
   Phone,
   PlusCircle,
   Users,
 } from "lucide-react";
+import { NRCSelector } from "./NRCSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +42,7 @@ import {
 } from "@/utils/validation";
 import { z } from "zod";
 import { useAuth, useToast } from "@/providers";
+import { getDashboardPath } from "@/utils/auth";
 import { MYANMAR_CITIES } from "@/constants";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/Logo.svg";
@@ -316,26 +316,28 @@ function OwnerStepTwo({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="owner-nrc" className="text-white/80">
+          <Label className="text-white/80">
             NRC Number
           </Label>
-          <div className="relative">
-            <IdCard className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              id="owner-nrc"
-              placeholder="12/ABC(N)123456"
-              className={`pl-10 ${glassInputClass}`}
-              {...register("nrc_number")}
-            />
-          </div>
+          <Controller
+            control={control}
+            name="nrc_number"
+            render={({ field }) => (
+              <NRCSelector value={field.value} onChange={field.onChange} />
+            )}
+          />
           {errors.nrc_number && (
             <p className="text-xs text-rose-200">{errors.nrc_number.message}</p>
           )}
         </div>
+      </div>
 
+      <div className="border-t border-white/10 mt-3" />
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="owner-city" className="text-white/80">
-            City
+            Current City
           </Label>
           <Controller
             control={control}
@@ -364,7 +366,7 @@ function OwnerStepTwo({
 
         <div className="space-y-2">
           <Label htmlFor="owner-township" className="text-white/80">
-            Township
+            Current Township
           </Label>
           <div className="relative">
             <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
@@ -603,26 +605,28 @@ function DriverStepTwo({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="driver-nrc" className="text-white/80">
+          <Label className="text-white/80">
             NRC Number
           </Label>
-          <div className="relative">
-            <IdCard className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              id="driver-nrc"
-              placeholder="12/ABC(N)123456"
-              className={`pl-10 ${glassInputClass}`}
-              {...register("nrc_number")}
-            />
-          </div>
+          <Controller
+            control={control}
+            name="nrc_number"
+            render={({ field }) => (
+              <NRCSelector value={field.value} onChange={field.onChange} />
+            )}
+          />
           {errors.nrc_number && (
             <p className="text-xs text-rose-200">{errors.nrc_number.message}</p>
           )}
         </div>
+      </div>
 
+      <div className="border-t border-white/10 mt-3" />
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="driver-city" className="text-white/80">
-            City
+            Current City
           </Label>
           <Controller
             control={control}
@@ -651,7 +655,7 @@ function DriverStepTwo({
 
         <div className="space-y-2">
           <Label htmlFor="driver-township" className="text-white/80">
-            Township
+            Current Township
           </Label>
           <div className="relative">
             <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
@@ -668,18 +672,28 @@ function DriverStepTwo({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="space-y-2 sm:col-span-1">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
           <Label htmlFor="driver-license-number" className="text-white/80">
             License Number
           </Label>
           <div className="relative">
             <Hash className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              id="driver-license-number"
-              placeholder="License number"
-              className={`pl-10 ${glassInputClass}`}
-              {...register("license_number")}
+            <Controller
+              control={control}
+              name="license_number"
+              render={({ field }) => (
+                <Input
+                  id="driver-license-number"
+                  inputMode="numeric"
+                  placeholder="License number"
+                  className={`pl-10 ${glassInputClass}`}
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ""))}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
+                />
+              )}
             />
           </div>
           {errors.license_number && (
@@ -689,29 +703,9 @@ function DriverStepTwo({
           )}
         </div>
 
-        <div className="space-y-2 sm:col-span-1">
-          <Label htmlFor="driver-license-expiry" className="text-white/80">
-            License Expiry
-          </Label>
-          <div className="relative">
-            <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              id="driver-license-expiry"
-              type="date"
-              className={`pl-10 ${glassInputClass}`}
-              {...register("license_expiry")}
-            />
-          </div>
-          {errors.license_expiry && (
-            <p className="text-xs text-rose-200">
-              {errors.license_expiry.message}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2 sm:col-span-1">
+        <div className="space-y-2">
           <Label htmlFor="driver-years-experience" className="text-white/80">
-            Year of Experience
+            Years of Experience
           </Label>
           <div className="relative">
             <Car className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
@@ -720,6 +714,7 @@ function DriverStepTwo({
               type="number"
               inputMode="numeric"
               min={0}
+              max={30}
               placeholder="0"
               className={`pl-10 ${glassInputClass}`}
               {...register("years_experience", { valueAsNumber: true })}
@@ -732,6 +727,8 @@ function DriverStepTwo({
           )}
         </div>
       </div>
+
+      <div className="border-t border-white/10 mt-3" />
 
       <div className="space-y-2">
         <Label htmlFor="driver-address" className="text-white/80">
@@ -852,7 +849,6 @@ function DriverRegisterFlow({ onRegister }: { onRegister: (data: any) => Promise
     city: "",
     township: "",
     license_number: "",
-    license_expiry: "",
     years_experience: 0,
   });
 
@@ -948,12 +944,12 @@ export function RegisterPage() {
       if (response.success) {
         addToast("Verification successful! Logging in...", "success");
         // Log in the user using the credentials from savedFormData
-        await login({
+        const loginResponse = await login({
           phone: savedFormData.phone,
           password: savedFormData.password,
         });
         setShowOtpModal(false);
-        navigate(role === "driver" ? "/driver" : "/owner", { replace: true });
+        navigate(getDashboardPath(loginResponse.user.role), { replace: true });
       }
     } catch (err: any) {
       addToast(err.response?.data?.error || err.message || "Verification failed", "error");

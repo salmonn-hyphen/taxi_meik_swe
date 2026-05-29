@@ -1,34 +1,51 @@
 import { z } from 'zod'
 
+const myanmarNrcRegex = /^(1[0-4]|[1-9])\/[A-Z_]{3,10}\([NEPS]\)\d{6}$/
+
 const phoneSchema = z
   .string()
-  .min(9, 'Phone number must be between 9 and 12 digits')
-  .max(12, 'Phone number must be between 9 and 12 digits')
-  .regex(/^\d+$/, 'Phone number must contain numbers only')
+  .min(9, 'Phone number must be between 9 and 15 characters')
+  .max(15, 'Phone number must be between 9 and 15 characters')
+  .regex(/^\+?\d+$/, 'Phone number must contain only numbers and optional leading +')
 
 const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters')
-  .regex(/^(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, 'Password must include a number and a special character')
+  .regex(/[A-Z]/, 'Password must include at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must include at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must include at least one number')
+  .regex(/[^A-Za-z0-9]/, 'Password must include at least one special character')
+
+const nameSchema = z
+  .string()
+  .trim()
+  .min(2, 'Full name must be at least 2 characters')
+  .regex(/^[A-Za-z\s]+$/, 'Name must contain only letters and spaces')
+  .max(100, 'Name must be at most 100 characters')
+
+const stringField = z
+  .string()
+  .trim()
+  .min(1, 'This field is required')
 
 export const loginSchema = z.object({
   phone: phoneSchema,
-  password: passwordSchema,
+  password: z.string().min(1, 'Password is required'),
 })
 
-const registerOwnerBaseSchema = z.object({
-  name: z.string().min(2, 'Full name must be at least 2 characters'),
+const registerBaseSchema = z.object({
+  name: nameSchema,
   email: z.string().email('Invalid email address'),
   phone: phoneSchema,
   password: passwordSchema,
   password_confirmation: z.string(),
-  nrc_number: z.string().min(5, 'Invalid NRC number'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  city: z.string().min(1, 'City is required'),
-  township: z.string().min(1, 'Township is required'),
+  nrc_number: z.string().regex(myanmarNrcRegex, 'Invalid Myanmar NRC format (e.g., 12/KAMANA(N)123456)'),
+  address: stringField.min(5, 'Address must be at least 5 characters'),
+  city: stringField,
+  township: stringField,
 })
 
-export const registerOwnerStepOneSchema = registerOwnerBaseSchema.pick({
+export const registerOwnerStepOneSchema = registerBaseSchema.pick({
   name: true,
   email: true,
   phone: true,
@@ -39,34 +56,19 @@ export const registerOwnerStepOneSchema = registerOwnerBaseSchema.pick({
   path: ['password_confirmation'],
 })
 
-export const registerOwnerStepTwoSchema = registerOwnerBaseSchema.pick({
+export const registerOwnerStepTwoSchema = registerBaseSchema.pick({
   nrc_number: true,
   address: true,
   city: true,
   township: true,
 })
 
-export const registerOwnerSchema = registerOwnerBaseSchema.refine((data) => data.password === data.password_confirmation, {
+export const registerOwnerSchema = registerBaseSchema.refine((data) => data.password === data.password_confirmation, {
   message: 'Passwords do not match',
   path: ['password_confirmation'],
 })
 
-const registerDriverBaseSchema = z.object({
-  name: z.string().min(2, 'Full name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  phone: phoneSchema,
-  password: passwordSchema,
-  password_confirmation: z.string(),
-  nrc_number: z.string().min(5, 'Invalid NRC number'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  city: z.string().min(1, 'City is required'),
-  township: z.string().min(1, 'Township is required'),
-  license_number: z.string().min(3, 'Invalid license number'),
-  license_expiry: z.string().min(1, 'License expiry is required'),
-  years_experience: z.number().min(0, 'Invalid experience'),
-})
-
-export const registerDriverStepOneSchema = registerDriverBaseSchema.pick({
+export const registerDriverStepOneSchema = registerBaseSchema.pick({
   name: true,
   email: true,
   phone: true,
@@ -77,17 +79,20 @@ export const registerDriverStepOneSchema = registerDriverBaseSchema.pick({
   path: ['password_confirmation'],
 })
 
-export const registerDriverStepTwoSchema = registerDriverBaseSchema.pick({
+export const registerDriverStepTwoSchema = registerBaseSchema.pick({
   nrc_number: true,
   address: true,
   city: true,
   township: true,
-  license_number: true,
-  license_expiry: true,
-  years_experience: true,
+}).extend({
+  license_number: z.string().min(3, 'Invalid license number').regex(/^\d+$/, 'License number must contain only numbers'),
+  years_experience: z.number().min(0, 'Invalid experience').max(30, 'Experience must not exceed 30 years'),
 })
 
-export const registerDriverSchema = registerDriverBaseSchema.refine((data) => data.password === data.password_confirmation, {
+export const registerDriverSchema = registerBaseSchema.extend({
+  license_number: z.string().min(3, 'Invalid license number').regex(/^\d+$/, 'License number must contain only numbers'),
+  years_experience: z.number().min(0, 'Invalid experience').max(30, 'Experience must not exceed 30 years'),
+}).refine((data) => data.password === data.password_confirmation, {
   message: 'Passwords do not match',
   path: ['password_confirmation'],
 })
@@ -184,7 +189,7 @@ export const profileSchema = z
       return true;
     },
     {
-      message: "Password must be at least 8 characters and include a number and a special character",
+      message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
       path: ["password"],
     }
   );

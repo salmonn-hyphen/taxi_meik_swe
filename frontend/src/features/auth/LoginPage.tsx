@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { loginSchema, type LoginFormData } from "@/utils/validation";
 import { useAuth, useToast } from "@/providers";
+import { getDashboardPath } from "@/utils/auth";
 import Logo from "@/assets/Logo.svg";
 
 export function LoginPage() {
@@ -40,19 +41,9 @@ export function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      await login(data);
+      const response = await login(data);
       addToast("Welcome back!", "success");
-      
-      const savedUserStr = localStorage.getItem('user');
-      const savedUser = savedUserStr ? JSON.parse(savedUserStr) : null;
-      const role = savedUser?.role;
-      if (role === 'DRIVER') {
-        navigate(`/driver`, { replace: true });
-      } else if (role === 'ADMIN') {
-        navigate(`/admin`, { replace: true });
-      } else {
-        navigate(`/owner`, { replace: true });
-      }
+      navigate(getDashboardPath(response.user.role), { replace: true });
     } catch (err: any) {
       addToast(err.response?.data?.error || err.message || "Login failed", "error");
     } finally {

@@ -1,4 +1,5 @@
 import { useAuth } from '@/providers'
+import { getDashboardPath } from '@/utils/auth'
 import { NotificationDropdown } from '@/components/shared/NotificationDropdown'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -18,7 +19,7 @@ export function Navbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 hover:bg-muted rounded-lg p-1.5 transition-colors">
+            <button className="flex items-center gap-2 rounded-lg p-1.5 transition-colors">
               <Avatar className="w-8 h-8">
                 <AvatarImage src={user?.profile_photo_url || ''} />
                 <AvatarFallback className="text-xs bg-primary/10 text-primary">
@@ -27,13 +28,13 @@ export function Navbar() {
               </Avatar>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-medium leading-tight">{user?.name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+                <p className="text-xs text-muted-foreground capitalize">{user?.role?.toLowerCase()}</p>
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to={user?.role === 'ADMIN' ? '/admin/profile' : `/${user?.role?.toLowerCase()}/profile`}>
+              <Link to={`${getDashboardPath(user?.role)}/profile`}>
                 <User className="w-4 h-4 mr-2" /> Profile
               </Link>
             </DropdownMenuItem>

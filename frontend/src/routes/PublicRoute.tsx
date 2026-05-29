@@ -2,11 +2,11 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/providers'
 import { getDashboardPath } from '@/utils/auth'
 
-interface GuestRouteProps {
+interface PublicRouteProps {
   children: React.ReactNode
 }
 
-export function GuestRoute({ children }: GuestRouteProps) {
+export function PublicRoute({ children }: PublicRouteProps) {
   const { isAuthenticated, user } = useAuth()
 
   if (isAuthenticated && user) {

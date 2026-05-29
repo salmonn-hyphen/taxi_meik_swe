@@ -5,7 +5,7 @@
   --color-primary-dark: #1e3a8a;
   --color-primary-light: #3b82f6;
   --color-secondary: #f59e0b;
-  --color-accent: #10b981;
+  --color-accent: #3b82f6;
   --color-danger: #ef4444;
   --color-warning: #f59e0b;
   --color-success: #10b981;
@@ -86,5 +86,20 @@
     -webkit-text-fill-color: #ffffff !important;
     caret-color: #ffffff;
     transition: background-color 9999s ease-in-out 0s;
+  }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }

@@ -430,7 +430,6 @@ export interface RegisterDriverRequest {
   city: string
   township: string
   license_number: string
-  license_expiry: string
   years_experience: number
 }
 
